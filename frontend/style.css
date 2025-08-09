@@ -1,0 +1,53 @@
+body {
+    background-color: #303C49;
+    padding: 0%;
+    margin: 0%;
+    color: red;
+    font-family: Roboto;
+}
+/* top bar */
+
+.top-bar {
+    display: flex;
+    justify-content: flex-end;
+    height: 9.2%;
+    background-color: white;
+}
+
+.top-button-bar {
+    display: flex;
+    gap: 1%;
+    margin-left: 2%;
+    margin-right: 2%;
+    justify-content: left;
+    align-items: center;
+    width: 100%;
+}
+
+.top-bar-button {
+    color: #303C49;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 999px;
+    width: auto;
+    height: 70%;
+    font-size: 2vw;
+    font-weight: 600;
+    padding-left: 2%;
+    padding-right: 2%;
+    text-overflow: ellipsis;
+}
+
+.top-bar-button:hover {
+    background-color: #bfbfbf;
+}
+
+/* logo */
+
+.man-logo {
+    height: 120%;
+    width: auto;
+    padding-right: 7%;
+    align-self: top;
+}
