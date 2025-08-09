@@ -5,6 +5,45 @@ body {
     color: red;
     font-family: Roboto;
 }
+
+/* middle buttons */
+
+.center-buttons {
+    height: 68.8%;
+    width: 100%;
+    display: flex;
+}
+
+.mechanic-buttons {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    width: 80%;
+    gap: 4%;
+    margin: 2%;
+}
+
+.other-buttons {
+    display: grid;
+    grid-template-columns: auto;
+    width: 20%;
+    gap: 4%;
+    margin: 2%;
+}
+
+.middle-button {
+    border-radius: 999px;
+    background: white;
+    border: none;
+    color: #303C49;
+    font-size: 1.5vw;
+    font-weight: bold;
+}
+
+.middle-button:hover {
+    background-color: #bfbfbf;
+}
+
+
 /* bottom bar */
 
 .bottom-bar {
@@ -36,7 +75,6 @@ body {
     align-self: flex-end;
     margin-right: 2%;
 }
-
 
 /* top bar */
 
