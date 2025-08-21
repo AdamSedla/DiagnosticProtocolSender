@@ -30,8 +30,7 @@ pub enum MailSenderError {
     CouldntSendEmail,
 }
 
-#[derive(Debug)]
-
+#[derive(Debug, PartialEq)]
 pub struct Receiver {
     pub name: String,
     pub mail: Address,
@@ -57,15 +56,7 @@ impl MailSender {
     }
 
     pub fn remove_person(&mut self, person: Receiver) -> Result<(), MailSenderError> {
-        let wanted_mail = person.mail;
-
-        let person_position = self.people.iter().position(|x| x.mail == wanted_mail);
-
-        if person_position.is_none() {
-            return Err(MailSenderError::NotInDatabase);
-        }
-
-        self.people.remove(person_position.unwrap());
+        self.people.retain(|x| *x != person);
 
         Ok(())
     }
