@@ -51,14 +51,16 @@ impl Default for MailSender {
 }
 
 impl MailSender {
-    pub fn add_person(&mut self, person: Receiver) {
+    pub fn add_person(&mut self, person: Receiver) -> &mut Self {
         self.people.push(person);
+
+        self
     }
 
-    pub fn remove_person(&mut self, person: Receiver) -> Result<(), MailSenderError> {
+    pub fn remove_person(&mut self, person: Receiver) -> &mut Self {
         self.people.retain(|x| *x != person);
 
-        Ok(())
+        self
     }
 
     pub fn add_file(&mut self, path_string: &str) -> Result<(), MailSenderError> {
@@ -73,7 +75,7 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn send(&self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn send(self) -> Result<Self, Box<dyn std::error::Error>> {
         if self.people.is_empty() {
             return Err(Box::new(MailSenderError::NoReceivers));
         }
@@ -126,7 +128,7 @@ impl MailSender {
 
         //send the email
         match mailer.send(&message.unwrap()) {
-            Ok(_) => Ok(()),
+            Ok(_) => Ok(self),
             Err(e) => {
                 println!("Could not send email: {e:?}");
                 Err(Box::new(MailSenderError::CouldntSendEmail))
