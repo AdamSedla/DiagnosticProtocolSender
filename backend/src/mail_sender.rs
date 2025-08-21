@@ -4,6 +4,8 @@ use lettre::message::Mailbox;
 use lettre::message::{Attachment, Body, MultiPart, header::ContentType};
 use lettre::{Address, Message, SmtpTransport, Transport};
 
+use crate::config::config;
+
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -87,12 +89,14 @@ impl MailSender {
             return Err(Box::new(MailSenderError::NoFile));
         }
 
+        let config = config::load_config();
+
         let mut message_builder = Message::builder();
 
         //sender
         message_builder = message_builder.from(Mailbox::new(
-            Some("MAN Diag Postřižín".to_string()),
-            "man.diag.postrizin@gmail.com".parse()?,
+            Some(config.get_sender_name()),
+            config.get_sender_mail().parse()?,
         ));
 
         //receiver
@@ -107,21 +111,21 @@ impl MailSender {
             });
 
         //subject
-        message_builder = message_builder.subject("Diagnostický protokol z válcové zkušebny");
+        message_builder = message_builder.subject(config.get_title());
 
         //attachment
         let message = message_builder.multipart(MultiPart::mixed().singlepart(
-            Attachment::new("protocol".to_string()).body(
+            Attachment::new(config.get_attachment_name().to_string()).body(
                 self.file.clone(),
                 ContentType::parse("application/pdf").unwrap(),
             ),
         ));
 
         //get credentials
-        let creds = todo!();
+        let creds = config.get_credentials();
 
         // open a remote connection to gmail
-        let mailer = SmtpTransport::relay("smtp.gmail.com")
+        let mailer = SmtpTransport::relay(config.get_smtp_transport()) //X
             .unwrap()
             .credentials(creds)
             .build();
