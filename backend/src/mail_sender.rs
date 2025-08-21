@@ -9,6 +9,8 @@ use crate::config::config;
 
 use thiserror::Error;
 
+use anyhow::Result;
+
 #[derive(Error, Debug)]
 pub enum MailSenderError {
     #[error("invalid email")]
@@ -75,12 +77,12 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn send(self) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn send(self) -> Result<()> {
         if self.people.is_empty() {
-            return Err(Box::new(MailSenderError::NoReceivers));
+            return Err(MailSenderError::NoReceivers.into());
         }
         if self.file_path.is_none() {
-            return Err(Box::new(MailSenderError::NoFile));
+            return Err(MailSenderError::NoFile.into());
         }
 
         let config = config::load_config();
@@ -108,30 +110,31 @@ impl MailSender {
         message_builder = message_builder.subject(config.get_title());
 
         //attachment
-        let file = fs::read(self.file_path.as_ref().unwrap())?;
+        let file = fs::read(self.file_path.as_ref().unwrap())
+            .map_err(|_| MailSenderError::InvalidFilePath)?;
 
-        let message = message_builder.multipart(MultiPart::mixed().singlepart(
-            Attachment::new(config.get_attachment_name().to_string()).body(
-                Body::new(file),
-                ContentType::parse("application/pdf").unwrap(),
+        let message = message_builder.multipart(
+            MultiPart::mixed().singlepart(
+                Attachment::new(config.get_attachment_name().to_string())
+                    .body(Body::new(file), ContentType::parse("application/pdf")?),
             ),
-        ));
+        );
 
         //get credentials
         let creds = config.get_credentials();
 
         // open a remote connection to gmail
-        let mailer = SmtpTransport::relay(config.get_smtp_transport()) //X
+        let mailer = SmtpTransport::relay(config.get_smtp_transport())
             .unwrap()
             .credentials(creds)
             .build();
 
         //send the email
         match mailer.send(&message.unwrap()) {
-            Ok(_) => Ok(self),
+            Ok(_) => Ok(()),
             Err(e) => {
                 println!("Could not send email: {e:?}");
-                Err(Box::new(MailSenderError::CouldntSendEmail))
+                Err(MailSenderError::CouldntSendEmail.into())
             }
         }
     }
