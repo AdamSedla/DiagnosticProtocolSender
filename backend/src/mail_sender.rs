@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::{Path, PathBuf};
 
 use lettre::message::Mailbox;
 use lettre::message::{Attachment, Body, MultiPart, header::ContentType};
@@ -38,14 +39,14 @@ pub struct Receiver {
 
 pub struct MailSender {
     people: Vec<Receiver>,
-    file: Body,
+    file_path: Option<PathBuf>,
 }
 
 impl Default for MailSender {
     fn default() -> Self {
         MailSender {
             people: vec![],
-            file: Body::new("".to_string()),
+            file_path: None,
         }
     }
 }
@@ -69,14 +70,14 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn add_file(&mut self, path: &str) -> Result<(), MailSenderError> {
-        let pdf_file = fs::read(path);
+    pub fn add_file(&mut self, path_string: &str) -> Result<(), MailSenderError> {
+        let path: PathBuf = path_string.into();
 
-        if pdf_file.is_err() {
+        if !path.is_file() {
             return Err(MailSenderError::InvalidFilePath);
         }
 
-        self.file = Body::new(pdf_file.unwrap());
+        self.file_path = Some(path);
 
         Ok(())
     }
@@ -85,7 +86,7 @@ impl MailSender {
         if self.people.is_empty() {
             return Err(Box::new(MailSenderError::NoReceivers));
         }
-        if self.file.is_empty() {
+        if self.file_path.is_none() {
             return Err(Box::new(MailSenderError::NoFile));
         }
 
@@ -114,9 +115,11 @@ impl MailSender {
         message_builder = message_builder.subject(config.get_title());
 
         //attachment
+        let file = fs::read(self.file_path.as_ref().unwrap())?;
+
         let message = message_builder.multipart(MultiPart::mixed().singlepart(
             Attachment::new(config.get_attachment_name().to_string()).body(
-                self.file.clone(),
+                Body::new(file),
                 ContentType::parse("application/pdf").unwrap(),
             ),
         ));
