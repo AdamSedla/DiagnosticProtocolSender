@@ -1,34 +1,30 @@
-use std::error::Error;
-use std::fmt::Display;
 use std::fs;
 
 use lettre::message::Mailbox;
 use lettre::message::{Attachment, Body, MultiPart, header::ContentType};
 use lettre::{Address, Message, SmtpTransport, Transport};
 
-#[derive(Debug)]
+use thiserror::Error;
+
+#[derive(Error, Debug)]
 pub enum MailSenderError {
+    #[error("invalid email")]
     InvalidEmail,
+
+    #[error("not in database")]
     NotInDatabase,
+
+    #[error("invalid file path")]
     InvalidFilePath,
+
+    #[error("no receivers")]
     NoReceivers,
+
+    #[error("no file")]
     NoFile,
+
+    #[error("couldn't send email")]
     CouldntSendEmail,
-}
-
-impl Error for MailSenderError {}
-
-impl Display for MailSenderError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            MailSenderError::InvalidEmail => write!(f, "invalid email"),
-            MailSenderError::NotInDatabase => write!(f, "not in database"),
-            MailSenderError::InvalidFilePath => write!(f, "invalid file path"),
-            MailSenderError::NoReceivers => write!(f, "no receivers"),
-            MailSenderError::NoFile => write!(f, "no file"),
-            MailSenderError::CouldntSendEmail => write!(f, "couldn't send email"),
-        }
-    }
 }
 
 #[derive(Debug)]
