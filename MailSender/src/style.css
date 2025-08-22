@@ -107,6 +107,10 @@ button:hover {
 
 .truck {
   height: 90%;
-  margin-right: 2%;
+  margin-right: 4%;
   align-self: flex-end;
+}
+
+.truck:hover {
+  filter: brightness(70%);
 }
