@@ -1,9 +1,11 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use lettre::message::Mailbox;
-use lettre::message::{Attachment, Body, MultiPart, header::ContentType};
+use lettre::message::{header::ContentType, Attachment, Body, MultiPart};
 use lettre::{Address, Message, SmtpTransport, Transport};
+
+use tauri_plugin_dialog::FilePath;
 
 use crate::config::config;
 
@@ -38,18 +40,10 @@ pub struct Receiver {
     pub mail: Address,
 }
 
+#[derive(Default, Debug)]
 pub struct MailSender {
     people: Vec<Receiver>,
     file_path: Option<PathBuf>,
-}
-
-impl Default for MailSender {
-    fn default() -> Self {
-        MailSender {
-            people: vec![],
-            file_path: None,
-        }
-    }
 }
 
 impl MailSender {
@@ -65,8 +59,12 @@ impl MailSender {
         self
     }
 
-    pub fn add_file(&mut self, path_string: &str) -> Result<(), MailSenderError> {
-        let path: PathBuf = path_string.into();
+    pub fn add_file(&mut self, path: FilePath) -> Result<(), MailSenderError> {
+        println!("File_path is: {path:?}");
+
+        let path = path
+            .into_path()
+            .map_err(|_| MailSenderError::InvalidFilePath)?;
 
         if !path.is_file() {
             return Err(MailSenderError::InvalidFilePath);
@@ -77,7 +75,7 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn send(self) -> Result<()> {
+    pub fn send(&self) -> Result<()> {
         if self.people.is_empty() {
             return Err(MailSenderError::NoReceivers.into());
         }

@@ -61,9 +61,9 @@
     </div>
   </div>
   <div class="bottom-bar">
-    <button class="file-picker">výběr souboru</button>
     <input type="image" class="truck" src="src/assets/send_truck.svg" alt="truck-icon" hx-post="command:greet"
       hx-trigger="click" hx-vals='{"name": "test"}'>
+    <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler">výběr souboru</button>
   </div>
 </body>
 

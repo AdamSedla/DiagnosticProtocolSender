@@ -1,18 +1,46 @@
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+mod config;
+mod mail_sender;
+mod ron_utils;
+
+use tauri::Manager;
+use tauri_plugin_dialog::DialogExt;
+
+use crate::mail_sender::MailSender;
+use crate::mail_sender::Receiver;
+
+use std::sync::Mutex;
+
+struct AppState {
+    mail: Mutex<MailSender>,
+}
 #[tauri::command]
-fn greet(name: &str) {
-    println!("Hello World! {}", name);
+
+#[tauri::command]
+fn pick_file_handler(app: tauri::AppHandle) {
+    app.dialog().file().pick_file(move |file_path| {
+        let app_state = app.state::<AppState>();
+
+        app_state
+            .mail
+            .lock()
+            .unwrap()
+            .add_file(file_path.unwrap())
+            .unwrap();
+    });
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet])
+        .setup(|app| {
+            app.manage(AppState {
+                mail: MailSender::default().into(),
+            });
+            Ok(())
+        })
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![pick_file_handler])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-mod config;
-mod mail_sender;
-mod ron_utils;
