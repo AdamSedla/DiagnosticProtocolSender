@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="src/style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PostrizinMailSender</title>
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}' />
+  <script type="module" src="/src/main.ts" defer></script>
 
 
   <!-- Font -->
@@ -60,7 +62,8 @@
   </div>
   <div class="bottom-bar">
     <button class="file-picker">výběr souboru</button>
-    <input type="image" class="truck" src="src/assets/send_truck.svg" alt="truck-icon">
+    <input type="image" class="truck" src="src/assets/send_truck.svg" alt="truck-icon" hx-post="command:greet"
+      hx-trigger="click" hx-vals='{"name": "test"}'>
   </div>
 </body>
 
