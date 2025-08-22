@@ -29,6 +29,14 @@ fn pick_file_handler(app: tauri::AppHandle) {
     });
 }
 
+#[tauri::command]
+fn send_handler(app: tauri::AppHandle) {
+    let app_state = app.state::<AppState>();
+    let mail = app_state.mail.lock().unwrap();
+
+    mail.send().unwrap();
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -39,8 +47,10 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(tauri::generate_handler![pick_file_handler])
+        .invoke_handler(tauri::generate_handler![
+            pick_file_handler,
+            send_handler,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
