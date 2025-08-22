@@ -60,8 +60,6 @@ impl MailSender {
     }
 
     pub fn add_file(&mut self, path: FilePath) -> Result<(), MailSenderError> {
-        println!("File_path is: {path:?}");
-
         let path = path
             .into_path()
             .map_err(|_| MailSenderError::InvalidFilePath)?;
