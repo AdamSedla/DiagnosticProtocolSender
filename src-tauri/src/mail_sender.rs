@@ -8,6 +8,7 @@ use lettre::{Address, Message, SmtpTransport, Transport};
 use tauri_plugin_dialog::FilePath;
 
 use crate::config::config;
+use crate::mail_list_utils::Person;
 
 use thiserror::Error;
 
@@ -34,7 +35,7 @@ pub enum MailSenderError {
     CouldntSendEmail,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Receiver {
     pub name: String,
     pub mail: Address,
@@ -47,14 +48,24 @@ pub struct MailSender {
 }
 
 impl MailSender {
-    pub fn add_person(&mut self, person: Receiver) -> &mut Self {
-        self.people.push(person);
+    pub fn add_person(&mut self, person: Person) -> &mut Self {
+        let person_parsed = Receiver {
+            name: person.name,
+            mail: person.mail.parse().unwrap(),
+        };
+
+        self.people.push(person_parsed);
 
         self
     }
 
-    pub fn remove_person(&mut self, person: Receiver) -> &mut Self {
-        self.people.retain(|x| *x != person);
+    pub fn remove_person(&mut self, person: Person) -> &mut Self {
+        let person_parsed = Receiver {
+            name: person.name,
+            mail: person.mail.parse().unwrap(),
+        };
+
+        self.people.retain(|x| *x != person_parsed);
 
         self
     }
