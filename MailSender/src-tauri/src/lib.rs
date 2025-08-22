@@ -12,3 +12,7 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+mod config;
+mod mail_sender;
+mod ron_utils;
