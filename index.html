@@ -25,40 +25,9 @@
     <img class="man-logo" src="src/assets/man_logo_batch.svg" alt="man-logo">
   </div>
   <div class="center-buttons">
-    <div class="mechanic-buttons">
-      <button class="middle-button" id="mechanic_0">mechanic_1</button>
-      <button class="middle-button" id="mechanic_1">mechanic_2</button>
-      <button class="middle-button" id="mechanic_2">mechanic_3</button>
-      <button class="middle-button" id="mechanic_3">mechanic_4</button>
-      <button class="middle-button" id="mechanic_4">mechanic_5</button>
-      <button class="middle-button" id="mechanic_5">mechanic_6</button>
-      <button class="middle-button" id="mechanic_6">mechanic_7</button>
-      <button class="middle-button" id="mechanic_7">mechanic_8</button>
-      <button class="middle-button" id="mechanic_8">mechanic_9</button>
-      <button class="middle-button" id="mechanic_9">mechanic_10</button>
-      <button class="middle-button" id="mechanic_10">mechanic_11</button>
-      <button class="middle-button" id="mechanic_11">mechanic_12</button>
-      <button class="middle-button" id="mechanic_12">mechanic_13</button>
-      <button class="middle-button" id="mechanic_13">mechanic_14</button>
-      <button class="middle-button" id="mechanic_14">mechanic_15</button>
-      <button class="middle-button" id="mechanic_15">mechanic_16</button>
-      <button class="middle-button" id="mechanic_16">mechanic_17</button>
-      <button class="middle-button" id="mechanic_17">mechanic_18</button>
-      <button class="middle-button" id="mechanic_18">mechanic_19</button>
-      <button class="middle-button" id="mechanic_19">mechanic_20</button>
-      <button class="middle-button" id="mechanic_20">mechanic_21</button>
-      <button class="middle-button" id="mechanic_21">mechanic_22</button>
-      <button class="middle-button" id="mechanic_22">mechanic_23</button>
-      <button class="middle-button" id="mechanic_23">mechanic_24</button>
+    <div class="mechanic-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_mechanics">
     </div>
-    <div class="right-buttons">
-      <button class="middle-button" id="technique_0">technique_1</button>
-      <button class="middle-button" id="technique_1">technique_2</button>
-      <button class="middle-button" id="technique_2">technique_3</button>
-      <button class="middle-button" id="technique_3">technique_4</button>
-      <button class="middle-button" id="technique_4">technique_5</button>
-      <button class="middle-button" id="other">ostatní...</button>
-    </div>
+    <div class="right-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_technics"> </div>
   </div>
   <div class="bottom-bar">
     <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler">výběr souboru</button>

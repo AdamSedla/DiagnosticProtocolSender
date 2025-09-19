@@ -27,4 +27,5 @@ lettre = "0.11.18"
 ron = "0.10.1"
 thiserror = "2.0.16"
 tauri-plugin-dialog = "2"
+maud = "0.27.0"
 

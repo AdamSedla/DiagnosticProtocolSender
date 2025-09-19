@@ -27,6 +27,15 @@ button:hover {
   background-color: #bfbfbf;
 }
 
+.placeholder {
+  background-color: #303C49;
+  cursor: default;
+}
+
+.placeholder:hover {
+  background-color: #303C49;
+}
+
 
 /* top bar */
 .top-bar {
