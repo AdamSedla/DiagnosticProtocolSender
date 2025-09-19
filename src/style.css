@@ -9,7 +9,6 @@ body {
   background-color: #303C49;
   color: red;
   font-family: Roboto, sans-serif;
-
   display: flex;
   flex-direction: column;
 }
@@ -24,7 +23,7 @@ button {
 }
 
 button:hover {
-  background-color: #bfbfbf;
+  background-color: #a1a1a1;
 }
 
 .placeholder {
@@ -34,6 +33,13 @@ button:hover {
 
 .placeholder:hover {
   background-color: #303C49;
+}
+
+.clicked {
+  background-color: #bfbfbf;
+  outline-width: 4px;
+  outline-style: solid;
+  outline-color: red;
 }
 
 
@@ -61,6 +67,10 @@ button:hover {
   font-weight: 600;
   padding: 0 2%;
   text-overflow: ellipsis;
+}
+
+.top-bar-button:hover {
+  background-color: #bfbfbf;
 }
 
 .man-logo {
