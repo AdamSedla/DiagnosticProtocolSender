@@ -130,6 +130,10 @@ fn send_handler(app: tauri::AppHandle) {
     let app_state = app.state::<AppState>();
     let mail = app_state.mail.lock().unwrap();
 
+    if !mail.is_valid() {
+        return;
+    }
+
     mail.send().unwrap();
 }
 

@@ -149,4 +149,8 @@ impl MailSender {
     pub fn new() -> MailSender {
         MailSender::default()
     }
+
+    pub fn is_valid(&self) -> bool {
+        !self.people.is_empty() && self.file_path.is_some()
+    }
 }
