@@ -14,11 +14,11 @@ pub struct MailList {
 }
 
 impl MailList {
-    pub fn save(&self) {
+    pub fn save_list(&self) {
         RonUtils::save_mail_list(self);
     }
 
-    pub fn load() -> MailList {
+    pub fn load_list() -> MailList {
         RonUtils::load_mail_list()
     }
 
@@ -30,7 +30,7 @@ impl MailList {
         self.list[id] = Some(person);
     }
 
-    pub fn delete_position(&mut self, id: usize) {
+    pub fn delete_person(&mut self, id: usize) {
         self.list[id] = None;
     }
 }

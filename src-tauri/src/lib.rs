@@ -143,7 +143,7 @@ pub fn run() {
         .setup(|app| {
             app.manage(AppState {
                 mail: MailSender::default().into(),
-                mail_list: MailList::load().into(),
+                mail_list: MailList::load_list().into(),
             });
             Ok(())
         })

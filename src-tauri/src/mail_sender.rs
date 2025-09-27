@@ -25,8 +25,8 @@ pub enum MailSenderError {
     #[error("invalid file path")]
     InvalidFilePath,
 
-    #[error("no receivers")]
-    NoReceivers,
+    #[error("no recipients")]
+    NoRecipients,
 
     #[error("no file")]
     NoFile,
@@ -36,20 +36,20 @@ pub enum MailSenderError {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Receiver {
+pub struct Recipient {
     pub name: String,
     pub mail: Address,
 }
 
 #[derive(Default, Debug)]
 pub struct MailSender {
-    people: Vec<Receiver>,
+    people: Vec<Recipient>,
     file_path: Option<PathBuf>,
 }
 
 impl MailSender {
     pub fn add_person(&mut self, person: Person) -> &mut Self {
-        let person_parsed = Receiver {
+        let person_parsed = Recipient {
             name: person.name,
             mail: person.mail.parse().unwrap(),
         };
@@ -60,7 +60,7 @@ impl MailSender {
     }
 
     pub fn remove_person(&mut self, person: Person) -> &mut Self {
-        let person_parsed = Receiver {
+        let person_parsed = Recipient {
             name: person.name,
             mail: person.mail.parse().unwrap(),
         };
@@ -86,7 +86,7 @@ impl MailSender {
 
     pub fn send(&self) -> Result<()> {
         if self.people.is_empty() {
-            return Err(MailSenderError::NoReceivers.into());
+            return Err(MailSenderError::NoRecipients.into());
         }
         if self.file_path.is_none() {
             return Err(MailSenderError::NoFile.into());
@@ -98,18 +98,18 @@ impl MailSender {
 
         //sender
         message_builder = message_builder.from(Mailbox::new(
-            Some(config.get_sender_name()),
-            config.get_sender_mail().parse()?,
+            Some(config.sender_name().to_string()),
+            config.sender_mail().parse()?,
         ));
 
-        //receiver
+        //recipient
         message_builder = self
             .people
             .iter()
-            .fold(message_builder, |message_builder, receiver| {
+            .fold(message_builder, |message_builder, recipient| {
                 message_builder.to(Mailbox::new(
-                    Some(receiver.name.clone()),
-                    receiver.mail.clone(),
+                    Some(recipient.name.clone()),
+                    recipient.mail.clone(),
                 ))
             });
 
@@ -128,10 +128,10 @@ impl MailSender {
         );
 
         //get credentials
-        let creds = config.get_credentials();
+        let creds = config.credentials();
 
         // open a remote connection to gmail
-        let mailer = SmtpTransport::relay(config.get_smtp_transport())
+        let mailer = SmtpTransport::relay(config.smtp_transport())
             .unwrap()
             .credentials(creds)
             .build();
