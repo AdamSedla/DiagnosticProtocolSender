@@ -123,12 +123,14 @@ impl MailSender {
         let file = fs::read(self.file_path.as_ref().unwrap())
             .map_err(|_| MailSenderError::InvalidFilePath)?;
 
-        let message = message_builder.multipart(
-            MultiPart::mixed().singlepart(
-                Attachment::new(config.get_attachment_name().to_string())
-                    .body(Body::new(file), ContentType::parse("application/pdf")?),
+        let MIME_type = mime_guess::from_path(self.file_path.as_ref().unwrap().to_str().unwrap());
+
+        let message = message_builder.multipart(MultiPart::mixed().singlepart(
+            Attachment::new(config.attachment_name().to_string()).body(
+                Body::new(file),
+                ContentType::parse(MIME_type.first().unwrap().essence_str())?,
             ),
-        );
+        ));
 
         //get credentials
         let creds = config.credentials();
