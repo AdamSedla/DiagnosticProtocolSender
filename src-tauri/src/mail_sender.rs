@@ -33,6 +33,9 @@ pub enum MailSenderError {
 
     #[error("couldn't send email")]
     CouldntSendEmail,
+
+    #[error("IoError")]
+    IoError,
 }
 
 #[derive(Debug, PartialEq, Clone)]
