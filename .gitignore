@@ -6,4 +6,5 @@ target/
 .DS_Store
 config.ron
 mail_list.ron
-/node_modules
+node_modules
+dist
