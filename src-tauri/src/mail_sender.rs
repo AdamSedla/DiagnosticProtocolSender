@@ -31,8 +31,8 @@ pub enum MailSenderError {
     #[error("no file")]
     NoFile,
 
-    #[error("couldn't send email")]
-    CouldntSendEmail,
+    #[error("couldn't send email: {0}")]
+    CouldntSendEmail(#[from] lettre::error::Error),
 
     #[error("IoError")]
     IoError,
@@ -142,13 +142,9 @@ impl MailSender {
             .build();
 
         //send the email
-        match mailer.send(&message.unwrap()) {
-            Ok(_) => Ok(()),
-            Err(e) => {
-                println!("Could not send email: {e:?}");
-                Err(MailSenderError::CouldntSendEmail.into())
-            }
-        }
+        mailer.send(&message.unwrap())?;
+
+        Ok(())
     }
 
     pub fn new() -> MailSender {
