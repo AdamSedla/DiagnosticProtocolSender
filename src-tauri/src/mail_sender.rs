@@ -34,8 +34,14 @@ pub enum MailSenderError {
     #[error("couldn't send email: {0}")]
     CouldntSendEmail(#[from] lettre::error::Error),
 
+    #[error("InvalidMessage")]
+    InvalidMessage,
+
     #[error("IoError")]
     IoError,
+
+    #[error("Couldn't open a remote connection to gmail")]
+    NoRemoteConnection,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -137,12 +143,12 @@ impl MailSender {
 
         // open a remote connection to gmail
         let mailer = SmtpTransport::relay(config.smtp_transport())
-            .unwrap()
+            .map_err(|_| MailSenderError::NoRemoteConnection)?
             .credentials(creds)
             .build();
 
         //send the email
-        mailer.send(&message.unwrap())?;
+        mailer.send(&message.map_err(|_| MailSenderError::InvalidMessage)?)?;
 
         Ok(())
     }
