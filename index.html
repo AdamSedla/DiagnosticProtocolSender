@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PostrizinMailSender</title>
+  <link rel="stylesheet" href="src/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}' />
+  <script type="module" src="/src/main.ts" defer></script>
+
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div class="top-bar">
+    <div class="top-button-bar">
+      <button class="top-bar-button">nastavení</button>
+      <button class="top-bar-button">hlášení chyb a nápady na vylepšení</button>
+      <button class="top-bar-button">návod k použití</button>
+    </div>
+    <img class="man-logo" src="src/assets/man_logo_batch.svg" alt="man-logo">
+  </div>
+  <div class="center-buttons">
+    <div class="mechanic-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_mechanics">
+    </div>
+    <div class="right-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_technics"> </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler">výběr souboru</button>
+    <input type="image" class="truck" src="src/assets/send_truck.svg" alt="truck-icon" hx-trigger="click"
+      hx-post="command:send_handler">
+  </div>
+</body>
+
+</html>
