@@ -48,7 +48,7 @@ button:hover {
 .hidden {
   display: none;
 }
- 
+
 /* top bar */
 .top-bar {
   display: flex;
@@ -140,7 +140,7 @@ button:hover {
   filter: brightness(70%);
 }
 
-.overlay {
+.overlay-option {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
@@ -191,7 +191,7 @@ button:hover {
   overflow-y: auto;
 }
 
-.other-mail-button-row{
+.other-mail-button-row {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -208,16 +208,16 @@ button:hover {
   height: 60px;
   flex: 1;
   padding-left: 20px;
- }
+}
 
- .other-mail-input-field::placeholder {
+.other-mail-input-field::placeholder {
   color: #303C49;
   font-size: large;
   font-weight: bold;
 
 }
 
-.remove-button{
+.remove-button {
   background-color: white;
   color: #303C49;
   font-size: large;
@@ -233,18 +233,18 @@ button:hover {
 
 }
 
-.remove-button:hover{
+.remove-button:hover {
   background-color: red;
   color: white;
 }
 
-.bottom-button-row{
+.bottom-button-row {
   padding-top: 15px;
   display: flex;
   gap: 30px;
 }
 
-.add-button{
+.add-button {
   background-color: white;
   color: #303C49;
   font-size: large;
@@ -259,7 +259,7 @@ button:hover {
 
 }
 
-.save-button{
+.save-button {
   background-color: white;
   color: #303C49;
   font-size: large;
@@ -273,6 +273,6 @@ button:hover {
   font-weight: bold;
 }
 
-.save-button:hover{
+.save-button:hover {
   background-color: greenyellow;
 }
