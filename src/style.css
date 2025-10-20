@@ -140,7 +140,7 @@ button:hover {
   filter: brightness(70%);
 }
 
-.overlay-option {
+.overlay-other {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
@@ -176,6 +176,12 @@ button:hover {
   font-weight: bolder;
   cursor: pointer;
 }
+
+.close-button:hover {
+  background-color: red;
+  color: white;
+}
+
 
 .other-mail-title {
   color: white;

@@ -62,7 +62,12 @@ fn load_technics(app: tauri::AppHandle) -> String {
                 button.middle-button.placeholder{}
             }
         }
-        button.middle-button{("ostatní...")}
+        button.middle-button
+        hx-post="command:open_other"
+        hx-trigger="click"
+        hx-target="#overlay-other-placeholder"
+        hx-swap="outerHTML"
+        {("ostatní...")}
     };
 
     markup.into_string()
@@ -111,6 +116,40 @@ fn remove_person(id: String, app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
+fn open_other(app: tauri::AppHandle) -> String {
+    let markup: Markup = html!(
+        div #overlay-other .overlay-other
+        {
+            div.other-mail-window
+            {
+                button.close-button
+                hx-post="command:close_other"
+                hx-trigger="click"
+                hx-target="#overlay-other"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.other-mail-title{("zadejte prosím E-mailové adresy")}
+                div.other-mail-buttons{}
+                div.bottom-button-row{
+                    button.add-button{("přidat další E-mail")}
+                    button.save-button{("uložit")}
+                }
+            }
+        }
+    );
+    markup.into_string()
+}
+
+#[tauri::command]
+fn close_other() -> String {
+    let markup: Markup = html!(
+        div #overlay-other-placeholder {}
+    );
+
+    markup.into_string()
+}
+
+#[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) {
     app.dialog().file().pick_file(move |file_path| {
         let app_state = app.state::<AppState>();
@@ -152,6 +191,8 @@ pub fn run() {
             send_handler,
             load_mechanics,
             load_technics,
+            open_other,
+            close_other,
             add_person,
             remove_person
         ])
