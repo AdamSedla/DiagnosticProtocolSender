@@ -137,7 +137,7 @@ fn open_other(app: tauri::AppHandle) -> String {
                 {(app_state.other_mail_list.lock().unwrap().render_input_fields())}
                 div.bottom-button-row{
                     button.add-button
-                    hx-post="command:add_other_mail"
+                    hx-post="command:add_other_mail_row"
                     hx-trigger="click"
                     hx-target="#other-mail-list-placeholder"
                     hx-swap="outerHTML"
@@ -150,7 +150,7 @@ fn open_other(app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
-fn add_other_mail(app: tauri::AppHandle) -> String {
+fn add_other_mail_row(app: tauri::AppHandle) -> String {
     //testing
     let markup: Markup = html! {
         div.other-mail-button-row{
@@ -220,7 +220,7 @@ pub fn run() {
             load_mechanics,
             load_technics,
             open_other,
-            add_other_mail,
+            add_other_mail_row,
             close_other,
             add_person,
             remove_person
