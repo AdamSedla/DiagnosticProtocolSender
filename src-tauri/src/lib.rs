@@ -169,9 +169,9 @@ fn add_other_mail(app: tauri::AppHandle) -> String {
 
 #[tauri::command]
 fn close_other() -> String {
-    let markup: Markup = html!(
+    let markup: Markup = html! {
         div #overlay-other-placeholder {}
-    );
+    };
 
     markup.into_string()
 }
