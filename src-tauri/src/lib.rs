@@ -264,7 +264,7 @@ fn send_handler(app: tauri::AppHandle) {
     let mut other_mail_list = app_state.other_mail_list.lock().unwrap();
 
     let file_valid = mail.file_is_valid();
-    let mail_list_not_empty = (mail.person_list_is_valid() && other_mail_list.is_empty());
+    let mail_list_not_empty = mail.person_list_is_valid() && other_mail_list.is_empty();
     let other_mail_list_valid = other_mail_list.is_valid();
 
     //valid check

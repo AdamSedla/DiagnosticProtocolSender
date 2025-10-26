@@ -3,14 +3,13 @@ use std::path::PathBuf;
 
 use lettre::message::Mailbox;
 use lettre::message::{header::ContentType, Attachment, Body, MultiPart};
-use lettre::{address, Address, Message, SmtpTransport, Transport};
+use lettre::{Address, Message, SmtpTransport, Transport};
 
 use tauri_plugin_dialog::FilePath;
 
-use crate::config::config;
+use crate::config::Config;
 use crate::mail_list_utils;
 use crate::mail_list_utils::Person;
-use crate::other_mail_utils;
 
 use thiserror::Error;
 
@@ -18,12 +17,6 @@ use anyhow::Result;
 
 #[derive(Error, Debug)]
 pub enum MailSenderError {
-    #[error("invalid email")]
-    InvalidEmail,
-
-    #[error("not in database")]
-    NotInDatabase,
-
     #[error("invalid file path")]
     InvalidFilePath,
 
@@ -38,9 +31,6 @@ pub enum MailSenderError {
 
     #[error("InvalidMessage")]
     InvalidMessage,
-
-    #[error("IoError")]
-    IoError,
 
     #[error("Couldn't open a remote connection to gmail")]
     NoRemoteConnection,
@@ -107,7 +97,7 @@ impl MailSender {
             return Err(MailSenderError::NoFile.into());
         }
 
-        let config = config::load_config();
+        let config = Config::load_config();
 
         let mut message_builder = Message::builder();
 
@@ -135,12 +125,12 @@ impl MailSender {
         let file = fs::read(self.file_path.as_ref().unwrap())
             .map_err(|_| MailSenderError::InvalidFilePath)?;
 
-        let MIME_type = mime_guess::from_path(self.file_path.as_ref().unwrap().to_str().unwrap());
+        let mime_type = mime_guess::from_path(self.file_path.as_ref().unwrap().to_str().unwrap());
 
         let message = message_builder.multipart(MultiPart::mixed().singlepart(
             Attachment::new(config.attachment_name().to_string()).body(
                 Body::new(file),
-                ContentType::parse(MIME_type.first().unwrap().essence_str())?,
+                ContentType::parse(mime_type.first().unwrap().essence_str())?,
             ),
         ));
 
@@ -157,10 +147,6 @@ impl MailSender {
         mailer.send(&message.map_err(|_| MailSenderError::InvalidMessage)?)?;
 
         Ok(())
-    }
-
-    pub fn new() -> MailSender {
-        MailSender::default()
     }
 
     pub fn file_is_valid(&self) -> bool {

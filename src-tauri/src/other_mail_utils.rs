@@ -1,10 +1,9 @@
-use std::{ops::Add, usize};
+use std::usize;
 
 use crate::mail_list_utils::Person;
 
 use lettre::Address;
 use maud::{html, Markup};
-use mime_guess::mime::XML;
 
 #[derive(Default, Debug)]
 pub struct OtherMailList {
