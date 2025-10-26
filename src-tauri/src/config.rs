@@ -7,7 +7,6 @@ pub struct Config {
     sender_mail: String,
     sender_password: String,
     title: String,
-    attachment_name: String,
     smtp_transport: String,
 }
 
@@ -28,9 +27,6 @@ impl Config {
     }
     pub fn get_title(&self) -> &str {
         &self.title
-    }
-    pub fn attachment_name(&self) -> &str {
-        &self.attachment_name
     }
     pub fn smtp_transport(&self) -> &str {
         &self.smtp_transport

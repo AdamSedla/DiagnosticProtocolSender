@@ -127,8 +127,18 @@ impl MailSender {
 
         let mime_type = mime_guess::from_path(self.file_path.as_ref().unwrap().to_str().unwrap());
 
+        let file_name = self
+            .file_path
+            .as_ref()
+            .unwrap()
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_string();
+
         let message = message_builder.multipart(MultiPart::mixed().singlepart(
-            Attachment::new(config.attachment_name().to_string()).body(
+            Attachment::new(file_name).body(
                 Body::new(file),
                 ContentType::parse(mime_type.first().unwrap().essence_str())?,
             ),
