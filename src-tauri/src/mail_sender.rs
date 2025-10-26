@@ -3,12 +3,14 @@ use std::path::PathBuf;
 
 use lettre::message::Mailbox;
 use lettre::message::{header::ContentType, Attachment, Body, MultiPart};
-use lettre::{Address, Message, SmtpTransport, Transport};
+use lettre::{address, Address, Message, SmtpTransport, Transport};
 
 use tauri_plugin_dialog::FilePath;
 
 use crate::config::config;
+use crate::mail_list_utils;
 use crate::mail_list_utils::Person;
+use crate::other_mail_utils;
 
 use thiserror::Error;
 
@@ -93,7 +95,11 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn send(&self) -> Result<()> {
+    pub fn send(&mut self, other_mail_list: Vec<mail_list_utils::Person>) -> Result<()> {
+        other_mail_list.iter().for_each(|person| {
+            self.add_person(person.clone());
+        });
+
         if self.people.is_empty() {
             return Err(MailSenderError::NoRecipients.into());
         }
@@ -157,7 +163,11 @@ impl MailSender {
         MailSender::default()
     }
 
-    pub fn is_valid(&self) -> bool {
-        !self.people.is_empty() && self.file_path.is_some()
+    pub fn file_is_valid(&self) -> bool {
+        self.file_path.is_some()
+    }
+
+    pub fn person_list_is_valid(&self) -> bool {
+        !self.people.is_empty()
     }
 }

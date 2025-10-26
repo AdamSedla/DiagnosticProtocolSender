@@ -1,8 +1,10 @@
-use std::usize;
+use std::{ops::Add, usize};
 
 use crate::mail_list_utils::Person;
 
+use lettre::Address;
 use maud::{html, Markup};
+use mime_guess::mime::XML;
 
 #[derive(Default, Debug)]
 pub struct OtherMailList {
@@ -75,5 +77,28 @@ impl OtherMailList {
                 *person = None;
             }
         });
+    }
+
+    pub fn export_other_mail_list(&mut self) -> Vec<Person> {
+        let mut final_vec: Vec<Person> = vec![];
+
+        self.list.iter().for_each(|person| {
+            if person.is_some() {
+                final_vec.push(person.clone().unwrap());
+            }
+        });
+
+        final_vec
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.list.is_empty()
+    }
+
+    pub fn is_valid(&self) -> bool {
+        self.list
+            .iter()
+            .filter_map(|person| person.as_ref())
+            .all(|person| person.mail.parse::<Address>().is_ok())
     }
 }

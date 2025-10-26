@@ -250,13 +250,19 @@ fn pick_file_handler(app: tauri::AppHandle) {
 #[tauri::command]
 fn send_handler(app: tauri::AppHandle) {
     let app_state = app.state::<AppState>();
-    let mail = app_state.mail.lock().unwrap();
+    let mut mail = app_state.mail.lock().unwrap();
+    let mut other_mail_list = app_state.other_mail_list.lock().unwrap();
 
-    if !mail.is_valid() {
+    let file_valid = mail.file_is_valid();
+    let mail_list_not_empty = (mail.person_list_is_valid() && other_mail_list.is_empty());
+    let other_mail_list_valid = other_mail_list.is_valid();
+
+    //valid check
+    if !(file_valid && ((mail_list_not_empty) || other_mail_list_valid)) {
         return;
     }
 
-    mail.send().unwrap();
+    mail.send(other_mail_list.export_other_mail_list()).unwrap();
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
