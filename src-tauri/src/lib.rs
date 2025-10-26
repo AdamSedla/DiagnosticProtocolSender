@@ -1,12 +1,13 @@
 mod config;
 mod mail_list_utils;
 mod mail_sender;
+mod other_mail_utils;
 
 use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 
-use crate::mail_list_utils::MailList;
 use crate::mail_sender::MailSender;
+use crate::{mail_list_utils::MailList, other_mail_utils::OtherMailList};
 
 use std::sync::Mutex;
 
@@ -15,6 +16,7 @@ use maud::{html, Markup};
 struct AppState {
     mail: Mutex<MailSender>,
     mail_list: Mutex<MailList>,
+    other_mail_list: Mutex<OtherMailList>,
 }
 
 #[tauri::command]
@@ -117,7 +119,9 @@ fn remove_person(id: String, app: tauri::AppHandle) -> String {
 
 #[tauri::command]
 fn open_other(app: tauri::AppHandle) -> String {
-    let markup: Markup = html!(
+    let app_state = app.state::<AppState>();
+
+    let markup: Markup = html! {
         div #overlay-other .overlay-other
         {
             div.other-mail-window
@@ -129,13 +133,37 @@ fn open_other(app: tauri::AppHandle) -> String {
                 hx-swap="outerHTML"
                 {("X")}
                 h1.other-mail-title{("zadejte prosím E-mailové adresy")}
-                div.other-mail-buttons{}
+                div.other-mail-buttons
+                {(app_state.other_mail_list.lock().unwrap().render_input_fields())}
                 div.bottom-button-row{
-                    button.add-button{("přidat další E-mail")}
+                    button.add-button
+                    hx-post="command:add_other_mail"
+                    hx-trigger="click"
+                    hx-target="#other-mail-list-placeholder"
+                    hx-swap="outerHTML"
+                    {("přidat další E-mail")}
                 }
             }
         }
-    );
+    };
+    markup.into_string()
+}
+
+#[tauri::command]
+fn add_other_mail(app: tauri::AppHandle) -> String {
+    //testing
+    let markup: Markup = html! {
+        div.other-mail-button-row{
+            input.other-mail-input-field
+            type="text"
+            placeholder="zadejte prosím E-mail"
+            {}
+            button.remove-button{("odstranit")}
+        }
+
+        div #other-mail-list-placeholder {}
+    };
+
     markup.into_string()
 }
 
@@ -181,6 +209,7 @@ pub fn run() {
             app.manage(AppState {
                 mail: MailSender::default().into(),
                 mail_list: MailList::load_list().into(),
+                other_mail_list: OtherMailList::default().into(),
             });
             Ok(())
         })
@@ -191,6 +220,7 @@ pub fn run() {
             load_mechanics,
             load_technics,
             open_other,
+            add_other_mail,
             close_other,
             add_person,
             remove_person
