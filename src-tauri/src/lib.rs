@@ -234,7 +234,7 @@ fn close_other(app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
-fn pick_file_handler(app: tauri::AppHandle) {
+fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_file(move |file_path| {
         let app_state = app.state::<AppState>();
 
@@ -245,6 +245,16 @@ fn pick_file_handler(app: tauri::AppHandle) {
             .add_file(file_path.unwrap())
             .unwrap();
     });
+
+    let markup: Markup = html! {
+        button.choosen-file-picker
+        hx-trigger="click"
+        hx-post="command:pick_file_handler"
+        hx-swap="outterHTML"
+        {"soubor vybrán"}
+    };
+
+    markup.into_string()
 }
 
 #[tauri::command]

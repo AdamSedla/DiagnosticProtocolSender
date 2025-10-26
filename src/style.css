@@ -130,6 +130,17 @@ button:hover {
   font-weight: 600;
 }
 
+.choosen-file-picker {
+  height: 75%;
+  width: 100%;
+  font-size: 4vw;
+  font-weight: 600;
+  outline-width: 4px;
+  outline-style: solid;
+  outline-color: red;
+  background-color: #bfbfbf;
+}
+
 .truck {
   height: 90%;
   margin-right: 4%;
