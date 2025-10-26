@@ -1,3 +1,5 @@
+use std::usize;
+
 use crate::mail_list_utils::Person;
 
 use maud::{html, Markup};
@@ -5,11 +7,12 @@ use maud::{html, Markup};
 #[derive(Default, Debug)]
 pub struct OtherMailList {
     list: Vec<Person>,
+    size: usize,
 }
 
 impl OtherMailList {
     pub fn size(&self) -> usize {
-        self.list.len()
+        self.size
     }
 
     pub fn render_input_fields(&self) -> Markup {
@@ -31,12 +34,13 @@ impl OtherMailList {
         }
 
         markup
+    }
 
-        /*
-                        <div class="other-mail-button-row">
-                        <input class="other-mail-input-field" type="text" placeholder="Zadejte prosím E-mail">
-                        <button class="remove-button">Odstranit</button>
-                        </div>
-        */
+    pub fn edit_person(&mut self, mail: &str, index: usize) {
+        println!("Index: {index} : size: {}", self.list.len());
+    }
+
+    pub fn increment_size(&mut self) {
+        self.size += 1;
     }
 }

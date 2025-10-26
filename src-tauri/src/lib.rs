@@ -151,12 +151,20 @@ fn open_other(app: tauri::AppHandle) -> String {
 
 #[tauri::command]
 fn add_other_mail_row(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    let index = app_state.other_mail_list.lock().unwrap().size();
+
     //testing
     let markup: Markup = html! {
         div.other-mail-button-row{
             input.other-mail-input-field
             type="text"
+            hx-post="command:edit_mail"
+            name="text"
+            hx-trigger="change"
             placeholder="zadejte prosím E-mail"
+            hx-vals={(format!(r#""id": {index}"#))}
             {}
             button.remove-button{("odstranit")}
         }
@@ -164,7 +172,14 @@ fn add_other_mail_row(app: tauri::AppHandle) -> String {
         div #other-mail-list-placeholder {}
     };
 
+    app_state.other_mail_list.lock().unwrap().increment_size();
+
     markup.into_string()
+}
+
+#[tauri::command]
+fn edit_mail(app: tauri::AppHandle, id: String, text: String) {
+    todo!()
 }
 
 #[tauri::command]
@@ -223,7 +238,8 @@ pub fn run() {
             add_other_mail_row,
             close_other,
             add_person,
-            remove_person
+            remove_person,
+            edit_mail
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
