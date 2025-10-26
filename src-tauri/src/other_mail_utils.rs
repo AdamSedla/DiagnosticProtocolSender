@@ -1,5 +1,3 @@
-use std::usize;
-
 use crate::mail_list_utils::Person;
 
 use lettre::Address;
