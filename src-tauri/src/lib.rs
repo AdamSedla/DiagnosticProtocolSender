@@ -132,7 +132,6 @@ fn open_other(app: tauri::AppHandle) -> String {
                 div.other-mail-buttons{}
                 div.bottom-button-row{
                     button.add-button{("přidat další E-mail")}
-                    button.save-button{("uložit")}
                 }
             }
         }

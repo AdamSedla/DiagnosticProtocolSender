@@ -259,26 +259,8 @@ button:hover {
   outline: none;
   border-radius: 999px;
   height: 60px;
-  width: 770px;
+  width: 1010px;
   cursor: pointer;
   font-weight: bold;
 
-}
-
-.save-button {
-  background-color: white;
-  color: #303C49;
-  font-size: large;
-  box-shadow: none;
-  border: none;
-  outline: none;
-  border-radius: 999px;
-  height: 60px;
-  width: 200px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.save-button:hover {
-  background-color: greenyellow;
 }
