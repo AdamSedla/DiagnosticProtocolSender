@@ -45,7 +45,7 @@ pub struct Recipient {
 #[derive(Default, Debug)]
 pub struct MailSender {
     people: Vec<Recipient>,
-    file_path: Option<PathBuf>,
+    files: Option<Vec<PathBuf>>,
 }
 
 impl MailSender {
@@ -71,16 +71,20 @@ impl MailSender {
         self
     }
 
-    pub fn add_file(&mut self, path: FilePath) -> Result<(), MailSenderError> {
-        let path = path
-            .into_path()
-            .map_err(|_| MailSenderError::InvalidFilePath)?;
+    pub fn add_file(&mut self, vec_path: Vec<FilePath>) -> Result<(), MailSenderError> {
+        self.files = Some(vec![]);
 
-        if !path.is_file() {
-            return Err(MailSenderError::InvalidFilePath);
+        for file in vec_path {
+            let path = file
+                .into_path()
+                .map_err(|_| MailSenderError::InvalidFilePath)?;
+
+            if !path.is_file() {
+                return Err(MailSenderError::InvalidFilePath);
+            }
+
+            self.files.as_mut().unwrap().push(path);
         }
-
-        self.file_path = Some(path);
 
         Ok(())
     }
@@ -93,7 +97,7 @@ impl MailSender {
         if self.people.is_empty() {
             return Err(MailSenderError::NoRecipients.into());
         }
-        if self.file_path.is_none() {
+        if self.files.is_none() {
             return Err(MailSenderError::NoFile.into());
         }
 
@@ -121,28 +125,26 @@ impl MailSender {
         //subject
         message_builder = message_builder.subject(config.get_title());
 
-        //attachment
-        let file = fs::read(self.file_path.as_ref().unwrap())
-            .map_err(|_| MailSenderError::InvalidFilePath)?;
+        //attachments
+        let mut attachment_multipart = MultiPart::mixed().build();
 
-        let mime_type = mime_guess::from_path(self.file_path.as_ref().unwrap().to_str().unwrap());
+        for file_path in self.files.as_ref().unwrap() {
+            let file = fs::read(file_path).map_err(|_| MailSenderError::InvalidFilePath)?;
 
-        let file_name = self
-            .file_path
-            .as_ref()
-            .unwrap()
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .to_string();
+            let mime_type = mime_guess::from_path(file_path);
 
-        let message = message_builder.multipart(MultiPart::mixed().singlepart(
-            Attachment::new(file_name).body(
-                Body::new(file),
-                ContentType::parse(mime_type.first().unwrap().essence_str())?,
-            ),
-        ));
+            let file_name = file_path.file_name().unwrap().to_str().unwrap().to_string();
+
+            attachment_multipart =
+                attachment_multipart
+                    .clone()
+                    .singlepart(Attachment::new(file_name).body(
+                        Body::new(file),
+                        ContentType::parse(mime_type.first().unwrap().essence_str())?,
+                    ));
+        }
+
+        let message = message_builder.multipart(attachment_multipart);
 
         //get credentials
         let creds = config.credentials();
@@ -160,7 +162,7 @@ impl MailSender {
     }
 
     pub fn file_is_valid(&self) -> bool {
-        self.file_path.is_some()
+        self.files.is_some()
     }
 
     pub fn person_list_is_valid(&self) -> bool {

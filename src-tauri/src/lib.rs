@@ -235,7 +235,7 @@ fn close_other(app: tauri::AppHandle) -> String {
 
 #[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
-    app.dialog().file().pick_file(move |file_path| {
+    app.dialog().file().pick_files(move |file_path| {
         let app_state = app.state::<AppState>();
 
         app_state
@@ -250,8 +250,8 @@ fn pick_file_handler(app: tauri::AppHandle) -> String {
         button.choosen-file-picker
         hx-trigger="click"
         hx-post="command:pick_file_handler"
-        hx-swap="outterHTML"
-        {"soubor vybrán"}
+        hx-swap="outerHTML"
+        {"soubor(y) vybrán(y)"}
     };
 
     markup.into_string()
