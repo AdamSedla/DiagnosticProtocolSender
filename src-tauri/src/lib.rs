@@ -162,7 +162,7 @@ fn add_other_mail_row(app: tauri::AppHandle) -> String {
             hx-post="command:edit_mail"
             name="text"
             hx-trigger="change"
-            placeholder="zadejte prosím E-mail"
+            placeholder="Zadejte prosím E-mail"
             hx-vals={(format!(r#""index": {index}"#))}
             {}
             button.remove-button

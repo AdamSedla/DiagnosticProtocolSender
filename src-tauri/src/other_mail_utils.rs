@@ -25,7 +25,7 @@ impl OtherMailList {
                             name="text"
                             hx-trigger="change"
                             hx-vals={(format!(r#""index": {index}"#))}
-                            placeholder="zadejte prosím E-mail"
+                            placeholder="Zadejte prosím E-mail"
                             value=(person.as_ref().unwrap().mail)
                             {}
                             button.remove-button
