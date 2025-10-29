@@ -198,7 +198,43 @@ button:hover {
   color: white;
   text-align: center;
   text-transform: uppercase;
+}
 
+.feedback-input {
+  background-color: white;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  height: 68%;
+  width: 90%;
+  padding-left: 20px;
+  padding-top: 20px;
+  color: #303C49;
+  font-size: medium;
+  font-weight: bold;
+  vertical-align: top;
+  resize: none;
+}
+
+.feedback-input::placeholder {
+  font-size: large;
+  font-weight: bold;
+}
+
+
+.feedback-send-button {
+  background-color: white;
+  color: #303C49;
+  font-size: large;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  height: 60px;
+  width: 500px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 20px;
 }
 
 .other-mail-buttons {

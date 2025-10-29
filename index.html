@@ -31,6 +31,17 @@
   </div>
 
   <div id="overlay-other-placeholder"></div>
+
+  <div class="overlay">
+    <div class="overlay-window">
+      <button class="close-button">X</button>
+      <h1 class="overlay-title">hlášení chyb a nápady na vylepšení</h1>
+      <textarea placeholder="Zadejte prosím zprávu pro vývojáře" class="feedback-input"></textarea>
+      <button class="feedback-send-button">odeslat</button>
+    </div>
+  </div>
+
+
   <div class="bottom-bar">
     <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler" hx-swap="outerHTML">výběr
       souborů</button>
