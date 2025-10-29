@@ -151,7 +151,7 @@ button:hover {
   filter: brightness(70%);
 }
 
-.overlay-other {
+.overlay {
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 0;
@@ -163,7 +163,7 @@ button:hover {
   align-items: center;
 }
 
-.other-mail-window {
+.overlay-window {
   background-color: #303C49;
   position: fixed;
   height: 75%;
@@ -194,7 +194,7 @@ button:hover {
 }
 
 
-.other-mail-title {
+.overlay-title {
   color: white;
   text-align: center;
   text-transform: uppercase;
@@ -274,5 +274,4 @@ button:hover {
   width: 1010px;
   cursor: pointer;
   font-weight: bold;
-
 }

@@ -122,9 +122,9 @@ fn open_other(app: tauri::AppHandle) -> String {
     let app_state = app.state::<AppState>();
 
     let markup: Markup = html! {
-        div #overlay-other .overlay-other
+        div #overlay-other .overlay
         {
-            div.other-mail-window
+            div.overlay-window
             {
                 button.close-button
                 hx-post="command:close_other"
@@ -132,7 +132,7 @@ fn open_other(app: tauri::AppHandle) -> String {
                 hx-target="#overlay-other"
                 hx-swap="outerHTML"
                 {("X")}
-                h1.other-mail-title{("zadejte prosím E-mailové adresy")}
+                h1.overlay-title{("zadejte prosím E-mailové adresy")}
                 div.other-mail-buttons #other-mail-buttons
                 {(app_state.other_mail_list.lock().unwrap().render_input_fields())}
                 div.bottom-button-row{
