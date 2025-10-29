@@ -237,6 +237,14 @@ button:hover {
   margin: 20px;
 }
 
+.manual-text {
+  color: white;
+  width: 80%;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: left;
+}
+
 .other-mail-buttons {
   width: 1000px;
   height: 350px;
