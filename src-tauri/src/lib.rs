@@ -284,9 +284,15 @@ fn open_feedback() -> String {
                 {("X")}
                 h1.overlay-title{("hlášení chyb a nápady na vylepšení")}
                 textarea.feedback-input
+                name="text"
                 placeholder="Zadejte prosím zprávu pro vývojáře"
                 {}
-                button.feedback-send-button {("odeslat")}
+                button.feedback-send-button
+                hx-post="command:send_feedback"
+                hx-trigger="click"
+                hx-include="[name='text']"
+                hx-swap="outerHTML"
+                {("odeslat")}
             }
         }
 
@@ -303,6 +309,24 @@ fn close_feedback() -> String {
 
     markup.into_string()
 }
+
+#[tauri::command]
+fn send_feedback(text: String) -> String {
+    if mail_sender::MailSender::send_feedback(text).is_ok() {
+        let markup: Markup = html! {
+            h1.feedback-send-message{("Zpětná vazba byla odeslána, děkujeme!")}
+        };
+        return markup.into_string();
+    } else {
+        let markup: Markup = html! {
+            h1.feedback-send-message{"Nepodařilo se odeslat zpětnou vazbu."
+            br;
+            "Kontaktujte prosím administrátora!"}
+        };
+        return markup.into_string();
+    }
+}
+
 #[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
@@ -373,6 +397,7 @@ pub fn run() {
             close_manual,
             open_feedback,
             close_feedback,
+            send_feedback
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

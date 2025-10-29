@@ -237,6 +237,13 @@ button:hover {
   margin: 20px;
 }
 
+.feedback-send-message {
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 29px;
+}
+
 .manual-text {
   color: white;
   width: 80%;

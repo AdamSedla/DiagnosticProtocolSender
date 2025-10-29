@@ -168,4 +168,42 @@ impl MailSender {
     pub fn person_list_is_valid(&self) -> bool {
         !self.people.is_empty()
     }
+
+    pub fn send_feedback(text: String) -> Result<()> {
+        let config = Config::load_config();
+
+        let mut message_builder = Message::builder();
+
+        //sender
+        message_builder = message_builder.from(Mailbox::new(
+            Some(config.sender_name().to_string()),
+            config.sender_mail().parse()?,
+        ));
+
+        //recepient
+        message_builder = message_builder.to(Mailbox::new(
+            Some(config.feedback_recepient().to_string()),
+            config.feedback_mail().parse()?,
+        ));
+
+        //subject
+        message_builder = message_builder.subject(config.feedback_subject());
+
+        //body
+        let message = message_builder.body(text);
+
+        //get credentials
+        let creds = config.credentials();
+
+        // open a remote connection to gmail
+        let mailer = SmtpTransport::relay(config.smtp_transport())
+            .map_err(|_| MailSenderError::NoRemoteConnection)?
+            .credentials(creds)
+            .build();
+
+        //send the email
+        mailer.send(&message.map_err(|_| MailSenderError::InvalidMessage)?)?;
+
+        Ok(())
+    }
 }

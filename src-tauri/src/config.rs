@@ -8,6 +8,9 @@ pub struct Config {
     sender_password: String,
     title: String,
     smtp_transport: String,
+    feedback_mail: String,
+    feedback_recepient: String,
+    feedback_subject: String,
 }
 
 impl Config {
@@ -30,5 +33,14 @@ impl Config {
     }
     pub fn smtp_transport(&self) -> &str {
         &self.smtp_transport
+    }
+    pub fn feedback_mail(&self) -> &str {
+        &self.feedback_mail
+    }
+    pub fn feedback_recepient(&self) -> &str {
+        &self.feedback_recepient
+    }
+    pub fn feedback_subject(&self) -> &str {
+        &self.feedback_subject
     }
 }
