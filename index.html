@@ -19,7 +19,8 @@
   <div class="top-bar">
     <div class="top-button-bar">
       <button class="top-bar-button">nastavení</button>
-      <button class="top-bar-button">hlášení chyb a nápady na vylepšení</button>
+      <button class="top-bar-button" hx-post="command:open_feedback" hx-trigger="click"
+        hx-target="#feedback-placeholder" hx-swap="outerHTML">hlášení chyb a nápady na vylepšení</button>
       <button class="top-bar-button" hx-post="command:open_manual" hx-trigger="click" hx-target="#manual-placeholder"
         hx-swap="outerHTML">návod k použití</button>
     </div>
@@ -32,15 +33,7 @@
   </div>
 
   <div id="overlay-other-placeholder"></div>
-
-  <div class="overlay">
-    <div class="overlay-window">
-      <button class="close-button">X</button>
-      <h1 class="overlay-title">hlášení chyb a nápady na vylepšení</h1>
-      <textarea placeholder="Zadejte prosím zprávu pro vývojáře" class="feedback-input"></textarea>
-      <button class="feedback-send-button">odeslat</button>
-    </div>
-  </div>
+  <div id="feedback-placeholder"></div>
   <div id="manual-placeholder"></div>
 
   <div class="bottom-bar">

@@ -270,6 +270,39 @@ fn close_manual() -> String {
 
     markup.into_string()
 }
+
+#[tauri::command]
+fn open_feedback() -> String {
+    let markup: Markup = html! {
+        div .overlay #overlay-feedback{
+            div .overlay-window{
+                button.close-button
+                hx-post="command:close_feedback"
+                hx-trigger="click"
+                hx-target="#overlay-feedback"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.overlay-title{("hlášení chyb a nápady na vylepšení")}
+                textarea.feedback-input
+                placeholder="Zadejte prosím zprávu pro vývojáře"
+                {}
+                button.feedback-send-button {("odeslat")}
+            }
+        }
+
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn close_feedback() -> String {
+    let markup: Markup = html! {
+        div #feedback-placeholder {}
+    };
+
+    markup.into_string()
+}
 #[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
@@ -338,6 +371,8 @@ pub fn run() {
             remove_other_row,
             open_manual,
             close_manual,
+            open_feedback,
+            close_feedback,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
