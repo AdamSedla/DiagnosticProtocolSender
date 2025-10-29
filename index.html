@@ -20,7 +20,8 @@
     <div class="top-button-bar">
       <button class="top-bar-button">nastavení</button>
       <button class="top-bar-button">hlášení chyb a nápady na vylepšení</button>
-      <button class="top-bar-button">návod k použití</button>
+      <button class="top-bar-button" hx-post="command:open_manual" hx-trigger="click" hx-target="#manual-placeholder"
+        hx-swap="outerHTML">návod k použití</button>
     </div>
     <img class="man-logo" src="src/assets/man_logo_batch.svg" alt="man-logo">
   </div>
@@ -40,22 +41,7 @@
       <button class="feedback-send-button">odeslat</button>
     </div>
   </div>
-  <div class="overlay">
-    <div class="overlay-window">
-      <button class="close-button">X</button>
-      <h1 class="overlay-title">Návod k použití</h1>
-      <ol class="manual-text">
-        <li>Vyberte přjemce (možné vybrat více)</li>
-        <ol>
-          <li>Kliknutím na jméno ve výběru</li>
-          <li>Kliknutím na "Ostatní..." a zadáním E-mailu příjemce</li>
-        </ol>
-        <li>Vyberte soubor k odeslání (možné vybrat více)</li>
-        <li>Klikněte na odeslat</li>
-      </ol>
-    </div>
-  </div>
-
+  <div id="manual-placeholder"></div>
 
   <div class="bottom-bar">
     <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler" hx-swap="outerHTML">výběr

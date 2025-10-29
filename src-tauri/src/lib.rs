@@ -234,6 +234,43 @@ fn close_other(app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
+fn open_manual() -> String {
+    let markup: Markup = html! {
+        div .overlay #overlay-manual{
+            div .overlay-window{
+                button.close-button
+                hx-post="command:close_manual"
+                hx-trigger="click"
+                hx-target="#overlay-manual"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.overlay-title{("Návod k použití")}
+                ol.manual-text{
+                    li{("Vyberte přjemce (možné vybrat více)")}
+                    ol{
+                        li{("Kliknutím na jméno ve výběru")}
+                        li{("Kliknutím na \"Ostatní...\" a zadáním E-mailu příjemce")}
+                    }
+                    li{("Vyberte soubor k odeslání (možné vybrat více)")}
+                    li{("Klikněte na odeslat")}
+                }
+            }
+        }
+
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn close_manual() -> String {
+    let markup: Markup = html! {
+        div #manual-placeholder {}
+    };
+
+    markup.into_string()
+}
+#[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
         let app_state = app.state::<AppState>();
@@ -298,7 +335,9 @@ pub fn run() {
             add_person,
             remove_person,
             edit_mail,
-            remove_other_row
+            remove_other_row,
+            open_manual,
+            close_manual,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
