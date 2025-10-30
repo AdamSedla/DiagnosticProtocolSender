@@ -36,6 +36,15 @@
   <div id="feedback-placeholder"></div>
   <div id="manual-placeholder"></div>
 
+  <div class="overlay">
+    <div class="overlay-window">
+      <button class="close-button">X</button>
+      <h1 class="password-title">Zadejte prosím heslo pro vstup do nastavení</h1>
+      <input class="password-input" placeholder="Heslo">
+      <button class="password-check-button">ověřit</button>
+    </div>
+  </div>
+
   <div class="bottom-bar">
     <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler" hx-swap="outerHTML">výběr
       souborů</button>

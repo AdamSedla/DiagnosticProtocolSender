@@ -200,6 +200,50 @@ button:hover {
   text-transform: uppercase;
 }
 
+.password-title {
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 35px;
+  margin-top: 10%;
+}
+
+.password-input {
+  background-color: white;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  width: 80%;
+  flex: 1;
+  padding-left: 30px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  color: #303C49;
+  font-size: large;
+  font-weight: bold;
+}
+
+.password-input::placeholder {
+  font-size: large;
+  font-weight: bold;
+}
+
+.password-check-button {
+  background-color: white;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  width: 30%;
+  flex: 1;
+  padding-left: 10px;
+  margin-bottom: 10%;
+  color: #303C49;
+  font-size: large;
+  font-weight: bold;
+}
+
 .feedback-input {
   background-color: white;
   box-shadow: none;
