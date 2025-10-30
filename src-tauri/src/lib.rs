@@ -328,6 +328,39 @@ fn send_feedback(text: String) -> String {
 }
 
 #[tauri::command]
+fn open_settings_password() -> String {
+    let markup: Markup = html! {
+        div .overlay #overlay-password{
+            div .overlay-window{
+                button.close-button
+                hx-post="command:close_settings_password"
+                hx-trigger="click"
+                hx-target="#overlay-password"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.password-title{("Zadejte prosím heslo pro vstup do nastavení")}
+                input.password-input
+                placeholder="Heslo"
+                {}
+                button.password-check-button
+                {("ověřit")}
+            }
+        }
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn close_settings_password() -> String {
+    let markup: Markup = html! {
+        div #settings-placeholder {}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
         let app_state = app.state::<AppState>();
@@ -397,7 +430,9 @@ pub fn run() {
             close_manual,
             open_feedback,
             close_feedback,
-            send_feedback
+            send_feedback,
+            open_settings_password,
+            close_settings_password
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

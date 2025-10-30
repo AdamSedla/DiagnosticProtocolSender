@@ -18,7 +18,8 @@
 <body>
   <div class="top-bar">
     <div class="top-button-bar">
-      <button class="top-bar-button">nastavení</button>
+      <button class="top-bar-button" hx-post="command:open_settings_password" hx-trigger="click"
+        hx-target="#settings-placeholder" hx-swap="outerHTML">nastavení</button>
       <button class="top-bar-button" hx-post="command:open_feedback" hx-trigger="click"
         hx-target="#feedback-placeholder" hx-swap="outerHTML">hlášení chyb a nápady na vylepšení</button>
       <button class="top-bar-button" hx-post="command:open_manual" hx-trigger="click" hx-target="#manual-placeholder"
@@ -35,15 +36,8 @@
   <div id="overlay-other-placeholder"></div>
   <div id="feedback-placeholder"></div>
   <div id="manual-placeholder"></div>
+  <div id="settings-placeholder"></div>
 
-  <div class="overlay">
-    <div class="overlay-window">
-      <button class="close-button">X</button>
-      <h1 class="password-title">Zadejte prosím heslo pro vstup do nastavení</h1>
-      <input class="password-input" placeholder="Heslo">
-      <button class="password-check-button">ověřit</button>
-    </div>
-  </div>
 
   <div class="bottom-bar">
     <button class="file-picker" hx-trigger="click" hx-post="command:pick_file_handler" hx-swap="outerHTML">výběr
