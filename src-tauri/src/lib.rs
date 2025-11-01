@@ -236,7 +236,7 @@ fn close_other(app: tauri::AppHandle) -> String {
 #[tauri::command]
 fn open_manual() -> String {
     let markup: Markup = html! {
-        div .overlay #overlay-manual{
+        div .overlay .most-top #overlay-manual{
             div .overlay-window{
                 button.close-button
                 hx-post="command:close_manual"
@@ -249,7 +249,13 @@ fn open_manual() -> String {
                     li{("Vyberte přjemce (možné vybrat více)")}
                     ol{
                         li{("Kliknutím na jméno ve výběru")}
-                        li{("Kliknutím na \"Ostatní...\" a zadáním E-mailu příjemce")}
+                        li{("Kliknutím na \"Ostatní...\"")}
+                        ol{
+                            li{("Kliknutím na \"přidat další E-mail\"")}
+                            li{("Zadáním E-mailu do nově přidaného pole")}
+                            li{("V případě potřeby lze pole smazat tlačítkem \"smazat\"")}
+                            li{("Po zadání všech E-mailů můžete okno standardně zavřít křížkem")}
+                        }
                     }
                     li{("Vyberte soubor k odeslání (možné vybrat více)")}
                     li{("Klikněte na odeslat")}
@@ -274,7 +280,7 @@ fn close_manual() -> String {
 #[tauri::command]
 fn open_feedback() -> String {
     let markup: Markup = html! {
-        div .overlay #overlay-feedback{
+        div .overlay .most-top #overlay-feedback{
             div .overlay-window{
                 button.close-button
                 hx-post="command:close_feedback"
@@ -330,7 +336,7 @@ fn send_feedback(text: String) -> String {
 #[tauri::command]
 fn open_settings_password() -> String {
     let markup: Markup = html! {
-        div .overlay #overlay-password{
+        div .overlay .most-top #overlay-password{
             div .overlay-window{
                 button.close-button
                 hx-post="command:close_settings_password"

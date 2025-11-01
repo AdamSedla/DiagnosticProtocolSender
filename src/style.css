@@ -370,3 +370,11 @@ button:hover {
   cursor: pointer;
   font-weight: bold;
 }
+
+.middle-top {
+  z-index: 10;
+}
+
+.most-top {
+  z-index: 20;
+}
