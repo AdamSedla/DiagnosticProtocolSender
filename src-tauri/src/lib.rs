@@ -549,12 +549,22 @@ fn edit_person(id: String, app: tauri::AppHandle) -> String {
             div.bottom-part-settings-names{
                 h1.settings-bottom-text{("jméno")}
                 input.settings-bottom-input
+                type="text"
+                hx-post="command:edit_person_name"
+                name="text"
+                hx-trigger="change"
+                hx-vals={(format!(r#""id": {id}"#))}
                 value=(person.name)
                 {}
             }
             div.bottom-part-settings-names{
                 h1.settings-bottom-text{("e-mail")}
                 input.settings-bottom-input
+                type="text"
+                hx-post="command:edit_person_mail"
+                name="text"
+                hx-trigger="change"
+                hx-vals={(format!(r#""id": {id}"#))}
                 value=(person.mail)
                 {}
             }
@@ -589,6 +599,32 @@ fn edit_person(id: String, app: tauri::AppHandle) -> String {
     *app_state.settings_current_person_id.lock().unwrap() = Some(id);
 
     markup.into_string()
+}
+
+#[tauri::command]
+fn edit_person_name(app: tauri::AppHandle, id: String, text: String) {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    app_state
+        .mail_list
+        .lock()
+        .unwrap()
+        .save_person_name(id, text);
+}
+
+#[tauri::command]
+fn edit_person_mail(app: tauri::AppHandle, id: String, text: String) {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    app_state
+        .mail_list
+        .lock()
+        .unwrap()
+        .save_person_mail(id, text);
 }
 
 #[tauri::command]
@@ -806,6 +842,8 @@ pub fn run() {
             edit_person,
             mark_person,
             unmark_person,
+            edit_person_name,
+            edit_person_mail
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

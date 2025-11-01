@@ -12,7 +12,15 @@ pub struct MailList {
 }
 
 impl MailList {
-    pub fn save_list(&self) {
+    pub fn save_list(&mut self) {
+        self.list.iter_mut().for_each(|person| {
+            if person.as_ref().is_some_and(|person_unwrap| {
+                person_unwrap.mail.is_empty() || person_unwrap.name.is_empty()
+            }) {
+                *person = None;
+            }
+        });
+
         let ron_string =
             ron::ser::to_string_pretty(&self.list, ron::ser::PrettyConfig::default()).unwrap();
 
@@ -28,11 +36,31 @@ impl MailList {
         self.list[id].clone()
     }
 
-    pub fn save_person(&mut self, id: usize, person: Person) {
+    pub fn save_person_name(&mut self, id: usize, name: String) {
+        let mut person = match self.load_person(id) {
+            Some(person) => person,
+            None => Person {
+                name: "".to_string(),
+                mail: "".to_string(),
+            },
+        };
+
+        person.name = name;
+
         self.list[id] = Some(person);
     }
 
-    pub fn delete_person(&mut self, id: usize) {
-        self.list[id] = None;
+    pub fn save_person_mail(&mut self, id: usize, mail: String) {
+        let mut person = match self.load_person(id) {
+            Some(person) => person,
+            None => Person {
+                name: "".to_string(),
+                mail: "".to_string(),
+            },
+        };
+
+        person.mail = mail;
+
+        self.list[id] = Some(person);
     }
 }
