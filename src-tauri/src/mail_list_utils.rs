@@ -22,7 +22,7 @@ impl MailList {
         });
 
         let ron_string =
-            ron::ser::to_string_pretty(&self.list, ron::ser::PrettyConfig::default()).unwrap();
+            ron::ser::to_string_pretty(self, ron::ser::PrettyConfig::default()).unwrap();
 
         std::fs::write("mail_list.ron", ron_string).unwrap();
     }
