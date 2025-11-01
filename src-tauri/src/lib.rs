@@ -460,11 +460,6 @@ fn close_settings_manual() -> String {
 }
 
 #[tauri::command]
-fn save_and_close_settings() -> String {
-    close_settings()
-}
-
-#[tauri::command]
 fn load_settings_mechanics(app: tauri::AppHandle) -> String {
     let app_state = app.state::<AppState>();
 
@@ -597,6 +592,70 @@ fn edit_person(id: String, app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
+fn mark_person(id: String, app: tauri::AppHandle) -> String {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let person = match mail_list.load_person(id) {
+        Some(person) => person,
+        None => mail_list_utils::Person {
+            name: "".to_string(),
+            mail: "".to_string(),
+        },
+    };
+
+    let markup: Markup = html! {
+        button.middle-button.clicked
+        id=(format!("id-{}", id))
+        {(person.name)}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn unmark_person(id: String, app: tauri::AppHandle) -> String {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let person = match mail_list.load_person(id) {
+        Some(person) => person,
+        None => mail_list_utils::Person {
+            name: "".to_string(),
+            mail: "".to_string(),
+        },
+    };
+
+    let markup: Markup = html! {
+        button.middle-button
+        id=(format!("id-{}", id))
+        hx-trigger="click"
+        hx-post="command:edit_person"
+        hx-swap="outerHTML"
+        hx-target="#bottom-bar"
+        hx-vals={(format!(r#""id": {id}"#))}
+        {(person.name)}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn save_and_close_settings(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    app_state.mail_list.lock().unwrap().save_list();
+
+    close_settings()
+}
+
+#[tauri::command]
 fn close_settings() -> String {
     let markup: Markup = html! {
         body #app-body {
@@ -658,61 +717,6 @@ fn close_settings() -> String {
             }
         }
     };
-    markup.into_string()
-}
-
-#[tauri::command]
-fn mark_person(id: String, app: tauri::AppHandle) -> String {
-    let id: usize = id.parse().unwrap();
-
-    let app_state = app.state::<AppState>();
-
-    let mail_list = app_state.mail_list.lock().unwrap();
-
-    let person = match mail_list.load_person(id) {
-        Some(person) => person,
-        None => mail_list_utils::Person {
-            name: "".to_string(),
-            mail: "".to_string(),
-        },
-    };
-
-    let markup: Markup = html! {
-        button.middle-button.clicked
-        id=(format!("id-{}", id))
-        {(person.name)}
-    };
-
-    markup.into_string()
-}
-
-#[tauri::command]
-fn unmark_person(id: String, app: tauri::AppHandle) -> String {
-    let id: usize = id.parse().unwrap();
-
-    let app_state = app.state::<AppState>();
-
-    let mail_list = app_state.mail_list.lock().unwrap();
-
-    let person = match mail_list.load_person(id) {
-        Some(person) => person,
-        None => mail_list_utils::Person {
-            name: "".to_string(),
-            mail: "".to_string(),
-        },
-    };
-
-    let markup: Markup = html! {
-        button.middle-button
-        id=(format!("id-{}", id))
-        hx-trigger="click"
-        hx-post="command:edit_person"
-        hx-swap="outerHTML"
-        hx-target="#bottom-bar"
-        hx-vals={(format!(r#""id": {id}"#))}
-        {(person.name)}
-    };
-
     markup.into_string()
 }
 
