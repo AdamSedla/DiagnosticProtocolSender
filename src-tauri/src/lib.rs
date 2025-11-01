@@ -372,7 +372,12 @@ fn close_settings_password() -> String {
 }
 
 #[tauri::command]
-fn open_settings() -> String {
+fn open_settings(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    app_state.mail.lock().unwrap().clear();
+    app_state.other_mail_list.lock().unwrap().clear();
+
     let markup: Markup = html! {
         body #app-body {
             div.top-bar{

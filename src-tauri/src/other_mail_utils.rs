@@ -98,4 +98,9 @@ impl OtherMailList {
             .filter_map(|person| person.as_ref())
             .all(|person| person.mail.parse::<Address>().is_ok())
     }
+
+    pub fn clear(&mut self) {
+        self.list.clear();
+        self.size = 0;
+    }
 }

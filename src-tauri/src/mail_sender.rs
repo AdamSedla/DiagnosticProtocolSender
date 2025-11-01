@@ -206,4 +206,9 @@ impl MailSender {
 
         Ok(())
     }
+
+    pub fn clear(&mut self) {
+        self.files = None;
+        self.people.clear();
+    }
 }
