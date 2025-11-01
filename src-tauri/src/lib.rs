@@ -349,6 +349,10 @@ fn open_settings_password() -> String {
                 placeholder="Heslo"
                 {}
                 button.password-check-button
+                hx-post="command:open_settings"
+                hx-trigger="click"
+                hx-target="#app-body"
+                hx-swap="outerHTML"
                 {("ověřit")}
             }
         }
@@ -363,6 +367,167 @@ fn close_settings_password() -> String {
         div #settings-placeholder {}
     };
 
+    markup.into_string()
+}
+
+#[tauri::command]
+fn open_settings() -> String {
+    let markup: Markup = html! {
+        body #app-body {
+            div.top-bar{
+                div.top-button-bar{
+                    button.top-bar-button
+                    hx-post="command:open_settings_config"
+                    hx-trigger="click"
+                    hx-target="#settings-config-placeholder"
+                    hx-swap="outerHTML"
+                    {("config")}
+                    button.top-bar-button
+                    hx-post="command:open_feedback"
+                    hx-trigger="click"
+                    hx-target="#feedback-placeholder"
+                    hx-swap="outerHTML"
+                    {("hlášení chyb a nápady na vylepšení")}
+                    button.top-bar-button
+                    hx-post="command:open_settings_manual"
+                    hx-trigger="click"
+                    hx-target="#settings-manual-placeholder"
+                    hx-swap="outerHTML"
+                    {("návod k použití")}
+                }
+                img.man-logo
+                src="src/assets/man_logo_batch.svg"
+                alt="man-logo"
+                {}
+
+            }
+            div.center-buttons{
+                div.mechanic-buttons
+                hx-trigger="load delay:1ms"
+                hx-swap="innerHTML"
+                hx-post="command:load_mechanics"
+                {}
+                div.right-buttons
+                hx-trigger="load delay:1ms"
+                hx-swap="innerHTML"
+                hx-post="command:load_technics"
+                {}
+            }
+            div #feedback-placeholder{}
+            div #settings-manual-placeholder{}
+            div #settings-config-placeholder{}
+            div.bottom-bar{
+                div.bottom-part-settings-names{
+                    h1.settings-bottom-text{("jméno")}
+                    input.settings-bottom-input{}
+                }
+                div.bottom-part-settings-names{
+                    h1.settings-bottom-text{("e-mail")}
+                    input.settings-bottom-input{}
+                }
+                div.bottom-part-settings-buttons{
+                    button.settings-bottom-button.save
+                    hx-post="command:save_and_close_settings"
+                    hx-trigger="click"
+                    hx-target="#app-body"
+                    hx-swap="outerHTML"
+                    {("uložit a zavřít")}
+                    button.settings-bottom-button.close{("zavřít bez uložení")}
+                }
+            }
+        }
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn open_settings_config() -> String {
+    todo!()
+}
+
+#[tauri::command]
+fn close_settings_config() -> String {
+    todo!()
+}
+
+#[tauri::command]
+fn open_settings_manual() -> String {
+    todo!()
+}
+
+#[tauri::command]
+fn close_settings_manual() -> String {
+    todo!()
+}
+
+#[tauri::command]
+fn save_and_close_settings() -> String {
+    close_settings()
+}
+
+#[tauri::command]
+fn close_settings() -> String {
+    let markup: Markup = html! {
+        body #app-body {
+            div.top-bar{
+                div.top-button-bar{
+                    button.top-bar-button
+                    hx-post="command:open_settings_password"
+                    hx-trigger="click"
+                    hx-target="#settings-placeholder"
+                    hx-swap="outerHTML"
+                    {("nastavení")}
+                    button.top-bar-button
+                    hx-post="command:open_feedback"
+                    hx-trigger="click"
+                    hx-target="#feedback-placeholder"
+                    hx-swap="outerHTML"
+                    {("hlášení chyb a nápady na vylepšení")}
+                    button.top-bar-button
+                    hx-post="command:open_manual"
+                    hx-trigger="click"
+                    hx-target="#manual-placeholder"
+                    hx-swap="outerHTML"
+                    {("návod k použití")}
+                }
+                img.man-logo
+                src="src/assets/man_logo_batch.svg"
+                alt="man-logo"
+                {}
+            }
+            div.center-buttons{
+                div.mechanic-buttons
+                hx-trigger="load delay:1ms"
+                hx-swap="innerHTML"
+                hx-post="command:load_mechanics"
+                {}
+                div.right-buttons
+                hx-trigger="load delay:1ms"
+                hx-swap="innerHTML"
+                hx-post="command:load_technics"
+                {}
+            }
+            div #overlay-other-placeholder{}
+            div #feedback-placeholder{}
+            div #manual-placeholder{}
+            div #settings-placeholder{}
+            div.bottom-bar{
+                button.file-picker
+                hx-trigger="click"
+                hx-post="command:pick_file_handler"
+                hx-swap="outerHTML"
+                {("výběr souboru")}
+                input.truck
+                type="image"
+                src="src/assets/send_truck.svg"
+                alt="truck-icon"
+                hx-trigger="click"
+                hx-post="command:send_handler"
+                {}
+            }
+        }
+    };
     markup.into_string()
 }
 
@@ -438,7 +603,14 @@ pub fn run() {
             close_feedback,
             send_feedback,
             open_settings_password,
-            close_settings_password
+            close_settings_password,
+            open_settings,
+            close_settings,
+            open_settings_config,
+            close_settings_config,
+            open_settings_manual,
+            close_settings_manual,
+            save_and_close_settings
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
