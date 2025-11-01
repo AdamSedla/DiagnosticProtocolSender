@@ -17,6 +17,7 @@ struct AppState {
     mail: Mutex<MailSender>,
     mail_list: Mutex<MailList>,
     other_mail_list: Mutex<OtherMailList>,
+    settings_current_person_id: Mutex<Option<usize>>,
 }
 
 #[tauri::command]
@@ -405,35 +406,32 @@ fn open_settings() -> String {
                 div.mechanic-buttons
                 hx-trigger="load delay:1ms"
                 hx-swap="innerHTML"
-                hx-post="command:load_mechanics"
+                hx-post="command:load_settings_mechanics"
                 {}
                 div.right-buttons
                 hx-trigger="load delay:1ms"
                 hx-swap="innerHTML"
-                hx-post="command:load_technics"
+                hx-post="command:load_settings_technics"
                 {}
             }
             div #feedback-placeholder{}
             div #settings-manual-placeholder{}
             div #settings-config-placeholder{}
-            div.bottom-bar{
-                div.bottom-part-settings-names{
-                    h1.settings-bottom-text{("jméno")}
-                    input.settings-bottom-input{}
-                }
-                div.bottom-part-settings-names{
-                    h1.settings-bottom-text{("e-mail")}
-                    input.settings-bottom-input{}
-                }
-                div.bottom-part-settings-buttons{
-                    button.settings-bottom-button.save
-                    hx-post="command:save_and_close_settings"
-                    hx-trigger="click"
-                    hx-target="#app-body"
-                    hx-swap="outerHTML"
-                    {("uložit a zavřít")}
-                    button.settings-bottom-button.close{("zavřít bez uložení")}
-                }
+            div.bottom-bar #bottom-bar{
+            div.bottom-part-settings-names{
+                h1.settings-bottom-text{("Vyberte prosím osobu pro úpravu údajů")}
+            }
+            div.bottom-part-settings-names{
+            }
+            div.bottom-part-settings-buttons{
+                button.settings-bottom-button.save
+                hx-post="command:save_and_close_settings"
+                hx-trigger="click"
+                hx-target="#app-body"
+                hx-swap="outerHTML"
+                {("uložit a zavřít")}
+                button.settings-bottom-button.close{("zavřít bez uložení")}
+            }
             }
         }
     };
@@ -464,6 +462,138 @@ fn close_settings_manual() -> String {
 #[tauri::command]
 fn save_and_close_settings() -> String {
     close_settings()
+}
+
+#[tauri::command]
+fn load_settings_mechanics(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let markup: Markup = html! {
+        @for i in 0..24 {
+            @if let Some(mechanic) = mail_list.load_person(i){
+                button.middle-button
+                id=(format!("id-{}", i))
+                hx-trigger="click"
+                hx-post="command:edit_person"
+                hx-swap="outerHTML"
+                hx-target="#bottom-bar"
+                hx-vals={(format!(r#""id": {i}"#))}
+                {(mechanic.name)}
+            }
+            @else{
+                button.middle-button
+                id=(format!("id-{}", i))
+                hx-trigger="click"
+                hx-post="command:edit_person"
+                hx-swap="outerHTML"
+                hx-target="#bottom-bar"
+                hx-vals={(format!(r#""id": {i}"#))}
+                {}
+            }
+        }
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn load_settings_technics(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let markup: Markup = html! {
+    @for i in 24..29 {
+        @if let Some(technic) = mail_list.load_person(i){
+            button.middle-button
+            id=(format!("id-{}", i))
+            hx-trigger="click"
+            hx-post="command:edit_person"
+            hx-swap="outerHTML"
+            hx-target="#bottom-bar"
+            hx-vals={(format!(r#""id": {i}"#))}
+            {(technic.name)}
+        }
+        @else{
+            button.middle-button
+            id=(format!("id-{}", i))
+            hx-trigger="click"
+            hx-post="command:edit_person"
+            hx-swap="outerHTML"
+            hx-target="#bottom-bar"
+            hx-vals={(format!(r#""id": {i}"#))}
+            {}
+        }
+    }
+    button.middle-button.placeholder{}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn edit_person(id: String, app: tauri::AppHandle) -> String {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let person = match mail_list.load_person(id) {
+        Some(person) => person,
+        None => mail_list_utils::Person {
+            name: "".to_string(),
+            mail: "".to_string(),
+        },
+    };
+
+    let markup: Markup = html! {
+        div.bottom-bar #bottom-bar {
+            div.bottom-part-settings-names{
+                h1.settings-bottom-text{("jméno")}
+                input.settings-bottom-input
+                value=(person.name)
+                {}
+            }
+            div.bottom-part-settings-names{
+                h1.settings-bottom-text{("e-mail")}
+                input.settings-bottom-input
+                value=(person.mail)
+                {}
+            }
+            div.bottom-part-settings-buttons{
+                button.settings-bottom-button.save
+                hx-post="command:save_and_close_settings"
+                hx-trigger="click"
+                hx-target="#app-body"
+                hx-swap="outerHTML"
+                {("uložit a zavřít")}
+                button.settings-bottom-button.close{("zavřít bez uložení")}
+            }
+        }
+        div
+        hx-trigger="load delay:1ms"
+        hx-swap="outerHTML"
+        hx-target=(format!("#id-{}", id))
+        hx-vals={(format!(r#""id": {id}"#))}
+        hx-post="command:mark_person"
+        {}
+        @if let Some(id) = *app_state.settings_current_person_id.lock().unwrap() {
+            div
+            hx-trigger="load delay:1ms"
+            hx-swap="outerHTML"
+            hx-target=(format!("#id-{}", id))
+            hx-vals={(format!(r#""id": {id}"#))}
+            hx-post="command:unmark_person"
+            {}
+        }
+    };
+
+    *app_state.settings_current_person_id.lock().unwrap() = Some(id);
+
+    markup.into_string()
 }
 
 #[tauri::command]
@@ -532,6 +662,61 @@ fn close_settings() -> String {
 }
 
 #[tauri::command]
+fn mark_person(id: String, app: tauri::AppHandle) -> String {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let person = match mail_list.load_person(id) {
+        Some(person) => person,
+        None => mail_list_utils::Person {
+            name: "".to_string(),
+            mail: "".to_string(),
+        },
+    };
+
+    let markup: Markup = html! {
+        button.middle-button.clicked
+        id=(format!("id-{}", id))
+        {(person.name)}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn unmark_person(id: String, app: tauri::AppHandle) -> String {
+    let id: usize = id.parse().unwrap();
+
+    let app_state = app.state::<AppState>();
+
+    let mail_list = app_state.mail_list.lock().unwrap();
+
+    let person = match mail_list.load_person(id) {
+        Some(person) => person,
+        None => mail_list_utils::Person {
+            name: "".to_string(),
+            mail: "".to_string(),
+        },
+    };
+
+    let markup: Markup = html! {
+        button.middle-button
+        id=(format!("id-{}", id))
+        hx-trigger="click"
+        hx-post="command:edit_person"
+        hx-swap="outerHTML"
+        hx-target="#bottom-bar"
+        hx-vals={(format!(r#""id": {id}"#))}
+        {(person.name)}
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
 fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
         let app_state = app.state::<AppState>();
@@ -581,6 +766,7 @@ pub fn run() {
                 mail: MailSender::default().into(),
                 mail_list: MailList::load_list().into(),
                 other_mail_list: OtherMailList::default().into(),
+                settings_current_person_id: None.into(),
             });
             Ok(())
         })
@@ -610,7 +796,12 @@ pub fn run() {
             close_settings_config,
             open_settings_manual,
             close_settings_manual,
-            save_and_close_settings
+            save_and_close_settings,
+            load_settings_mechanics,
+            load_settings_technics,
+            edit_person,
+            mark_person,
+            unmark_person,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
