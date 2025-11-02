@@ -456,12 +456,42 @@ fn close_settings_config() -> String {
 
 #[tauri::command]
 fn open_settings_manual() -> String {
-    todo!()
+    let markup: Markup = html! {
+            div .overlay .most-top #overlay-manual{
+                div .overlay-window{
+                    button.close-button
+                    hx-post="command:close_settings_manual"
+                    hx-trigger="click"
+                    hx-target="#overlay-manual"
+                    hx-swap="outerHTML"
+                    {("X")}
+                    h1.overlay-title{("Návod k použití nastavení")}
+                    ol.manual-text{
+                        li{("Vyberte osobu ke změně nebo smazání údajů")}
+                        ol{
+                            li{("Přidání osoby - Přidejte jméno a E-mail vybrané osoby")}
+                            li{("Úprava osoby - Upravte jméno nebo E-mail vybrané osoby")}
+                            li{("Smazání osoby - Smažte jméno osoby")}
+                        }
+                        li{("Po dokončení změn")}
+                        ol{
+                            li{("Pro uložení změn - klikněte na \"uložit a zavřít\"")}
+                            li{("Pro zrušení všech změn - klikněte na \"zavřít bez uložení\"")}
+                        }
+                    }
+                }
+            }
+    };
+    markup.into_string()
 }
 
 #[tauri::command]
 fn close_settings_manual() -> String {
-    todo!()
+    let markup: Markup = html! {
+        div #settings-manual-placeholder {}
+    };
+
+    markup.into_string()
 }
 
 #[tauri::command]
