@@ -294,7 +294,7 @@ fn open_feedback() -> String {
                 name="text"
                 placeholder="Zadejte prosím zprávu pro vývojáře"
                 {}
-                button.feedback-send-button
+                button.feedback-send-button.save
                 hx-post="command:send_feedback"
                 hx-trigger="click"
                 hx-include="[name='text']"
@@ -302,7 +302,6 @@ fn open_feedback() -> String {
                 {("odeslat")}
             }
         }
-
     };
 
     markup.into_string()
@@ -349,7 +348,7 @@ fn open_settings_password() -> String {
                 input.password-input
                 placeholder="Heslo"
                 {}
-                button.password-check-button
+                button.password-check-button.save
                 hx-post="command:open_settings"
                 hx-trigger="click"
                 hx-target="#app-body"
