@@ -796,12 +796,14 @@ fn pick_file_handler(app: tauri::AppHandle) -> String {
     app.dialog().file().pick_files(move |file_path| {
         let app_state = app.state::<AppState>();
 
-        app_state
-            .mail
-            .lock()
-            .unwrap()
-            .add_file(file_path.unwrap())
-            .unwrap();
+        if file_path.is_some() {
+            app_state
+                .mail
+                .lock()
+                .unwrap()
+                .add_file(file_path.unwrap())
+                .unwrap();
+        }
     });
 
     let markup: Markup = html! {
