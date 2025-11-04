@@ -89,7 +89,11 @@ impl MailSender {
         Ok(())
     }
 
-    pub fn send(&mut self, other_mail_list: Vec<mail_list_utils::Person>) -> Result<()> {
+    pub fn send(
+        &mut self,
+        other_mail_list: Vec<mail_list_utils::Person>,
+        config: Config,
+    ) -> Result<()> {
         other_mail_list.iter().for_each(|person| {
             self.add_person(person.clone());
         });
@@ -100,8 +104,6 @@ impl MailSender {
         if self.files.is_none() {
             return Err(MailSenderError::NoFile.into());
         }
-
-        let config = Config::load_config();
 
         let mut message_builder = Message::builder();
 
@@ -169,9 +171,7 @@ impl MailSender {
         !self.people.is_empty()
     }
 
-    pub fn send_feedback(text: String) -> Result<()> {
-        let config = Config::load_config();
-
+    pub fn send_feedback(text: String, config: Config) -> Result<()> {
         let mut message_builder = Message::builder();
 
         //sender

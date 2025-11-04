@@ -6,6 +6,7 @@ mod other_mail_utils;
 use tauri::Manager;
 use tauri_plugin_dialog::DialogExt;
 
+use crate::config::Config;
 use crate::mail_sender::MailSender;
 use crate::{mail_list_utils::MailList, other_mail_utils::OtherMailList};
 
@@ -18,6 +19,7 @@ struct AppState {
     mail_list: Mutex<MailList>,
     other_mail_list: Mutex<OtherMailList>,
     settings_current_person_id: Mutex<Option<usize>>,
+    config: Mutex<Config>,
 }
 
 #[tauri::command]
@@ -317,8 +319,11 @@ fn close_feedback() -> String {
 }
 
 #[tauri::command]
-fn send_feedback(text: String) -> String {
-    if mail_sender::MailSender::send_feedback(text).is_ok() {
+fn send_feedback(text: String, app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+    let config = app_state.config.lock().unwrap().clone();
+
+    if mail_sender::MailSender::send_feedback(text, config).is_ok() {
         let markup: Markup = html! {
             h1.feedback-send-message{("Zpětná vazba byla odeslána, děkujeme!")}
         };
@@ -821,6 +826,7 @@ fn send_handler(app: tauri::AppHandle) {
     let app_state = app.state::<AppState>();
     let mut mail = app_state.mail.lock().unwrap();
     let mut other_mail_list = app_state.other_mail_list.lock().unwrap();
+    let config = app_state.config.lock().unwrap().clone();
 
     let file_valid = mail.file_is_valid();
     let mail_list_not_empty = mail.person_list_is_valid() && other_mail_list.is_empty();
@@ -831,7 +837,8 @@ fn send_handler(app: tauri::AppHandle) {
         return;
     }
 
-    mail.send(other_mail_list.export_other_mail_list()).unwrap();
+    mail.send(other_mail_list.export_other_mail_list(), config)
+        .unwrap();
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -843,6 +850,7 @@ pub fn run() {
                 mail_list: MailList::load_list().into(),
                 other_mail_list: OtherMailList::default().into(),
                 settings_current_person_id: None.into(),
+                config: Config::load_config().into(),
             });
             Ok(())
         })

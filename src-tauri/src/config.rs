@@ -1,7 +1,7 @@
 use lettre::transport::smtp::authentication::Credentials;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
     sender_name: String,
     sender_mail: String,
