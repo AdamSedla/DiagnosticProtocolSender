@@ -455,3 +455,55 @@ button:hover {
 .most-top {
   z-index: 20;
 }
+
+.config-row-section {
+  width: 1000px;
+  height: 350px;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.config-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.save-config {
+  background-color: white;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  width: 450px;
+  flex: 1;
+  padding-left: 10px;
+  margin-bottom: 10%;
+  color: #303C49;
+  font-size: large;
+  font-weight: bold;
+}
+
+.config-row-title {
+  color: white;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 25px;
+}
+
+.config-row-input-field {
+  background-color: white;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  height: 60px;
+  width: 50px;
+  flex: 1;
+  padding-left: 20px;
+  color: #303C49;
+  font-size: large;
+  font-weight: bold;
+  max-width: 700px;
+  margin-left: auto;
+}

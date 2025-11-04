@@ -449,13 +449,232 @@ fn open_settings(app: tauri::AppHandle) -> String {
 }
 
 #[tauri::command]
-fn open_settings_config() -> String {
-    todo!()
+fn open_settings_config(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+    let config = app_state.config.lock().unwrap().clone();
+
+    let markup: Markup = html! {
+        div #overlay-settings-config .overlay{
+            div.overlay-window{
+                button.close-button
+                hx-post="command:discard_and_close_settings_config"
+                hx-trigger="click"
+                hx-target="#overlay-settings-config"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.overlay-title{("úprava konfiguračního souboru")}
+                div.config-row-section{
+                    div.config-row{
+                        h1.config-row-title
+                        {("Jméno odesilatele:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_sender_name"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.sender_name())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("E-mail odesilatele:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_sender_mail"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.sender_mail())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("heslo odesilatele:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_sender_password"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.sender_password())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("předmět E-mailu:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_title"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.title())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("smtp transport:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_smtp_transport"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.smtp_transport())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("feedback E-mail:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_feedback_mail"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.feedback_mail())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("feedback příjemce:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_feedback_recepient"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.feedback_recepient())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("feedback předmět:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_feedback_subject"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.feedback_subject())
+                        {}
+                    }
+                    div.config-row{
+                        h1.config-row-title
+                        {("heslo nastavení:")}
+                        input.config-row-input-field
+                        type="text"
+                        hx-post="command:save_settings_password"
+                        hx-trigger="change"
+                        name="text"
+                        value=(config.settings_password())
+                        {}
+                    }
+                }
+                div.bottom-button-row{
+                    button.save-config.save
+                    hx-post="command:save_and_close_settings_config"
+                    hx-trigger="click"
+                    hx-target="#overlay-settings-config"
+                    hx-swap="outerHTML"
+                    {("uložit a zavřít")}
+                }
+            }
+        }
+    };
+
+    markup.into_string()
+}
+
+#[tauri::command]
+fn save_sender_name(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_sender_name(text);
+}
+
+#[tauri::command]
+fn save_sender_mail(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_sender_mail(text);
+}
+
+#[tauri::command]
+fn save_sender_password(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_sender_password(text);
+}
+
+#[tauri::command]
+fn save_title(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_title(text);
+}
+
+#[tauri::command]
+fn save_smtp_transport(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_smtp_transport(text);
+}
+
+#[tauri::command]
+fn save_feedback_mail(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_feedback_mail(text);
+}
+
+#[tauri::command]
+fn save_feedback_recepient(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state
+        .config
+        .lock()
+        .unwrap()
+        .save_feedback_recepient(text);
+}
+
+#[tauri::command]
+fn save_feedback_subject(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_feedback_subject(text);
+}
+
+#[tauri::command]
+fn save_settings_password(app: tauri::AppHandle, text: String) {
+    let app_state = app.state::<AppState>();
+
+    app_state
+        .config
+        .lock()
+        .unwrap()
+        .save_settings_password(text);
+}
+
+#[tauri::command]
+fn save_and_close_settings_config(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    app_state.config.lock().unwrap().save_config();
+
+    close_settings_config()
+}
+
+#[tauri::command]
+fn discard_and_close_settings_config(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    *app_state.config.lock().unwrap() = Config::load_config();
+
+    close_settings_config()
 }
 
 #[tauri::command]
 fn close_settings_config() -> String {
-    todo!()
+    let markup: Markup = html! {
+        div #settings-config-placeholder {}
+    };
+
+    markup.into_string()
 }
 
 #[tauri::command]
@@ -877,7 +1096,7 @@ pub fn run() {
             open_settings,
             close_settings,
             open_settings_config,
-            close_settings_config,
+            discard_and_close_settings_config,
             open_settings_manual,
             close_settings_manual,
             save_and_close_settings,
@@ -887,7 +1106,17 @@ pub fn run() {
             mark_person,
             unmark_person,
             edit_person_name,
-            edit_person_mail
+            edit_person_mail,
+            save_and_close_settings_config,
+            save_sender_name,
+            save_sender_mail,
+            save_sender_password,
+            save_title,
+            save_smtp_transport,
+            save_feedback_mail,
+            save_feedback_recepient,
+            save_feedback_subject,
+            save_settings_password
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
