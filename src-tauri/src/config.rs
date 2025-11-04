@@ -11,6 +11,7 @@ pub struct Config {
     feedback_mail: String,
     feedback_recepient: String,
     feedback_subject: String,
+    settings_password: String,
 }
 
 impl Config {
@@ -42,5 +43,8 @@ impl Config {
     }
     pub fn feedback_subject(&self) -> &str {
         &self.feedback_subject
+    }
+    pub fn settings_password_check(&self, password: &str) -> bool {
+        self.settings_password == password
     }
 }
