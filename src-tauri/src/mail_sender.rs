@@ -125,7 +125,7 @@ impl MailSender {
             });
 
         //subject
-        message_builder = message_builder.subject(config.get_title());
+        message_builder = message_builder.subject(config.title());
 
         //attachments
         let mut attachment_multipart = MultiPart::mixed().build();

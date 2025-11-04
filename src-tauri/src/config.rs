@@ -29,7 +29,7 @@ impl Config {
     pub fn credentials(&self) -> Credentials {
         Credentials::new(self.sender_mail.clone(), self.sender_password.clone())
     }
-    pub fn get_title(&self) -> &str {
+    pub fn title(&self) -> &str {
         &self.title
     }
     pub fn smtp_transport(&self) -> &str {
