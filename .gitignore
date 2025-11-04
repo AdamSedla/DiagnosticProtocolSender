@@ -4,8 +4,7 @@ target/
 *.pdb
 **/mutants.out*/
 .DS_Store
-config.ron
-mail_list.ron
+*.ron
 node_modules
 dist
 pnpm-lock.yaml
