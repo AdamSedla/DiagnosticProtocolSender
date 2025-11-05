@@ -1,7 +1,9 @@
-use crate::mail_list_utils::Person;
-
 use lettre::Address;
 use maud::{html, Markup};
+
+use crate::backend::mail_list_utils::Person;
+
+//---------------------------
 
 #[derive(Default, Debug)]
 pub struct OtherMailList {

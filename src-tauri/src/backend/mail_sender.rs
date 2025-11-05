@@ -1,19 +1,22 @@
-use std::fs;
-use std::path::PathBuf;
+use anyhow::Result;
+
 
 use lettre::message::Mailbox;
 use lettre::message::{header::ContentType, Attachment, Body, MultiPart};
 use lettre::{Address, Message, SmtpTransport, Transport};
 
-use tauri_plugin_dialog::FilePath;
+use std::fs;
+use std::path::PathBuf;
 
-use crate::config::Config;
-use crate::mail_list_utils;
-use crate::mail_list_utils::Person;
+use tauri_plugin_dialog::FilePath;
 
 use thiserror::Error;
 
-use anyhow::Result;
+use crate::backend::config::Config;
+use crate::backend::mail_list_utils;
+use crate::backend::mail_list_utils::Person;
+
+//---------------------------
 
 #[derive(Error, Debug)]
 pub enum MailSenderError {

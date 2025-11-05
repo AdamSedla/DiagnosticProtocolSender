@@ -1,6 +1,8 @@
 use lettre::transport::smtp::authentication::Credentials;
 use serde::{Deserialize, Serialize};
 
+//---------------------------
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
     sender_name: String,
@@ -19,10 +21,10 @@ impl Config {
         let ron_string =
             ron::ser::to_string_pretty(self, ron::ser::PrettyConfig::default()).unwrap();
 
-        std::fs::write("Config.ron", ron_string).unwrap();
+        std::fs::write("config.ron", ron_string).unwrap();
     }
     pub fn load_config() -> Config {
-        let ron_string = std::fs::read_to_string("Config.ron").unwrap();
+        let ron_string = std::fs::read_to_string("config.ron").unwrap();
         let result: Config = ron::de::from_str(&ron_string).unwrap();
         result
     }
