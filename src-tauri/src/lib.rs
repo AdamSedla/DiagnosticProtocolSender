@@ -97,12 +97,12 @@ use crate::handlers::feedback::*;
 
 /* 
 mail_send
+    - send
     - load_mechanics
     - load_technics
     - add_person
     - remove_person
     - pick_file
-    - send   
 */
 use crate::handlers::mail_send::*;
 

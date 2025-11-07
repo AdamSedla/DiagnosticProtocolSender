@@ -278,6 +278,7 @@ pub fn close_settings() -> String {
                 alt="truck-icon"
                 hx-trigger="click"
                 hx-post="command:send"
+                hx-swap="outerHTML"
                 {}
             }
         }

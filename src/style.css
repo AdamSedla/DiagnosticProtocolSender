@@ -150,6 +150,27 @@ button:hover {
   align-self: flex-end;
 }
 
+.drive-animation {
+  position: relative;
+  animation-name: truck_move_animation;
+  animation-duration: 4s;
+
+}
+
+@keyframes truck_move_animation {
+  0% {
+    left: 0px;
+  }
+
+  50% {
+    left: 500px;
+  }
+
+  100% {
+    left: 0px;
+  }
+}
+
 .truck:hover {
   filter: brightness(70%);
 }

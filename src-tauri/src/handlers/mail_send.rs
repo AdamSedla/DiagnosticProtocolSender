@@ -6,7 +6,7 @@ use crate::AppState;
 //---------------------------
 
 #[tauri::command]
-pub fn send(app: tauri::AppHandle) {
+pub fn send(app: tauri::AppHandle) -> String {
     let app_state = app.state::<AppState>();
     let mut mail = app_state.mail.lock().unwrap();
     let mut other_mail_list = app_state.other_mail_list.lock().unwrap();
@@ -18,11 +18,29 @@ pub fn send(app: tauri::AppHandle) {
 
     //valid check
     if !(file_valid && ((mail_list_not_empty) || other_mail_list_valid)) {
-        return;
+        return html!{
+            input.truck
+            type="image"
+            src="src/assets/send_truck.svg"
+            alt="truck-icon"
+            hx-trigger="click"
+            hx-post="command:send"
+            {}
+        }.into_string();
     }
 
-    mail.send(other_mail_list.export_other_mail_list(), config)
-        .unwrap();
+    mail.send(other_mail_list.export_other_mail_list(), config).unwrap();
+
+    html!{
+        input.truck.drive-animation
+        type="image"
+        src="src/assets/send_truck.svg"
+        alt="truck-icon"
+        hx-trigger="click"
+        hx-post="command:send"
+        hx-swap="outerHTML"
+        {}
+    }.into_string()
 }
 
 #[tauri::command]
