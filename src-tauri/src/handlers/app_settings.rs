@@ -202,7 +202,7 @@ pub fn wrong_mail_warning(name_list: Vec<String>) -> String {
                 {("X")}
                 h1.overlay-title{("Následující osoby mají neplatný E-mail")}
                 div.mail-warning-rows-section{
-                    @for (name) in (name_list){
+                    @for name in (name_list){
                         h2.mail-warning-row{(name)};
                     }
                 }
