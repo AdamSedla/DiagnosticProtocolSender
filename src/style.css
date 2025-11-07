@@ -525,3 +525,43 @@ button:hover {
   font-size: 30px;
   margin: 0;
 }
+
+.discard-overlay-title {
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 35px;
+  margin-top: 10%;
+}
+
+
+.discard-overlay-back {
+  background-color: white;
+  color: #303C49;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  width: 40%;
+  padding-left: 10px;
+  margin-bottom: 5%;
+  margin-top: 5%;
+  font-size: larger;
+  font-weight: bold;
+
+}
+
+.discard-overlay-discard {
+  background-color: white;
+  color: #303C49;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  border-radius: 999px;
+  width: 20%;
+  padding-left: 10px;
+  margin-bottom: 10%;
+  font-size: large;
+  font-weight: bold;
+
+}

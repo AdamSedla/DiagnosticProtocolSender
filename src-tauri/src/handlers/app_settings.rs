@@ -3,6 +3,7 @@ use tauri::Manager;
 
 use crate::AppState;
 use crate::backend::mail_list_utils;
+use crate::MailList;
 
 //---------------------------
 
@@ -95,6 +96,7 @@ pub fn open_settings(app: tauri::AppHandle) -> String {
             div #settings-manual-placeholder{}
             div #settings-config-placeholder{}
             div #valid-mail-placeholder{}
+            div #discard-overlay-placeholder {}
             div.bottom-bar #bottom-bar{
             div.bottom-part-settings-names{
                 h1.settings-bottom-text{("Vyberte prosím osobu pro úpravu údajů")}
@@ -108,13 +110,63 @@ pub fn open_settings(app: tauri::AppHandle) -> String {
                 hx-target="#valid-mail-placeholder"
                 hx-swap="outerHTML"
                 {("uložit a zavřít")}
-                button.settings-bottom-button.close{("zavřít bez uložení")}
+                button.settings-bottom-button.close
+                hx-post="command:open_discard_overlay"
+                hx-trigger="click"
+                hx-target="#discard-overlay-placeholder"
+                hx-swap="outerHTML"
+                {("zavřít bez uložení")}
             }
             }
         }
     };
 
     markup.into_string()
+}
+
+#[tauri::command]
+pub fn open_discard_overlay()->String{
+    html!{
+        div .overlay #discard-overlay{
+            div .overlay-window{
+                button.close-button
+                hx-post="command:close_discard_overlay"
+                hx-trigger="click"
+                hx-target="#discard-overlay"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.discard-overlay-title{("Opravdu si přejete odejít bez uložení?")}
+                button.discard-overlay-back.save
+                hx-post="command:close_discard_overlay"
+                hx-trigger="click"
+                hx-target="#discard-overlay"
+                hx-swap="outerHTML"
+                {("návrat zpět do nastavení")}
+                button.discard-overlay-discard.close
+                hx-post="command:discard_and_close_settings"
+                hx-trigger="click"
+                hx-target="#app-body"
+                hx-swap="outerHTML"
+                {("odejít bez uložení")}
+            }
+        }
+    }.into_string()
+}
+
+#[tauri::command]
+pub fn close_discard_overlay()->String{
+    html!{
+        div #discard-overlay-placeholder {}
+    }.into_string()
+}
+
+#[tauri::command]
+pub fn discard_and_close_settings(app: tauri::AppHandle) -> String {
+    let app_state = app.state::<AppState>();
+
+    *app_state.mail_list.lock().unwrap() = MailList::load_list();
+
+    close_settings()
 }
 
 #[tauri::command]
@@ -153,9 +205,6 @@ pub fn wrong_mail_warning(name_list: Vec<String>) -> String {
                     @for (name) in (name_list){
                         h2.mail-warning-row{(name)};
                     }
-
-
-
                 }
                 h1.overlay-title{("Upravte nebo smažte je")}
 
@@ -169,15 +218,6 @@ pub fn close_wrong_mail_warning() -> String{
     html! {
         div #valid-mail-placeholder{}
     }.into_string()
-}
-
-#[tauri::command]
-pub fn discard_and_close_settings(app: tauri::AppHandle) -> String {
-    //todo: discard
-
-    //close_settings()
-    
-    todo!()
 }
 
 #[tauri::command]
@@ -361,7 +401,13 @@ pub fn edit_person(id: String, app: tauri::AppHandle) -> String {
                 hx-target="#valid-mail-placeholder"
                 hx-swap="outerHTML"
                 {("uložit a zavřít")}
-                button.settings-bottom-button.close{("zavřít bez uložení")}
+                button.settings-bottom-button.close
+                hx-post="command:open_discard_overlay"
+                hx-trigger="click"
+                hx-target="#discard-overlay-placeholder"
+                hx-swap="outerHTML"
+                {("zavřít bez uložení")}
+
             }
         }
         div

@@ -46,10 +46,12 @@ app_settings:
     - open_settings_password
     - close_settings_password
     - open_settings
+    - open_discard_overlay
+    - close_discard_overlay
+    - discard_and_close_settings
     - save_and_close_settings
     - wrong_mail_warning
     - close_wrong_mail_warning
-    - discard_and_close_settings
     - close_settings
     - load_settings_mechanics
     - load_settings_technics
@@ -188,7 +190,9 @@ pub fn run() {
             save_feedback_subject,
             save_settings_password,
             close_wrong_mail_warning,
-            close_settings
+            close_settings,
+            open_discard_overlay,
+            close_discard_overlay,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
