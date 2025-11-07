@@ -507,3 +507,21 @@ button:hover {
   max-width: 700px;
   margin-left: auto;
 }
+
+.mail-warning-rows-section {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 1000px;
+  overflow-y: auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.mail-warning-row {
+  color: red;
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 30px;
+  margin: 0;
+}

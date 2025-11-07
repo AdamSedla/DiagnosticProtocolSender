@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use lettre::Address;
 
 //---------------------------
 
@@ -14,19 +15,35 @@ pub struct MailList {
 }
 
 impl MailList {
-    pub fn save_list(&mut self) {
+    pub fn save_list(&mut self) -> Result<(), Vec<String>>{
         self.list.iter_mut().for_each(|person| {
             if person.as_ref().is_some_and(|person_unwrap| {
-                person_unwrap.mail.is_empty() || person_unwrap.name.is_empty()
+                person_unwrap.name.is_empty()
             }) {
                 *person = None;
             }
         });
 
+        let mut wrong_mail_list: Vec<String> = vec![];
+
+        for person in self.list.iter(){
+            if person.as_ref().is_some_and(|person|{
+                person.mail.parse::<Address>().is_err()
+            }){
+                wrong_mail_list.push(person.as_ref().unwrap().name.clone());
+            }
+        }
+
+        if !wrong_mail_list.is_empty(){
+            return Err(wrong_mail_list)
+        }
+
         let ron_string =
             ron::ser::to_string_pretty(self, ron::ser::PrettyConfig::default()).unwrap();
 
         std::fs::write("mail_list.ron", ron_string).unwrap();
+
+        Ok(())
     }
 
     pub fn load_list() -> MailList {

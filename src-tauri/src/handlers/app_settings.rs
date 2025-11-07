@@ -94,6 +94,7 @@ pub fn open_settings(app: tauri::AppHandle) -> String {
             div #feedback-placeholder{}
             div #settings-manual-placeholder{}
             div #settings-config-placeholder{}
+            div #valid-mail-placeholder{}
             div.bottom-bar #bottom-bar{
             div.bottom-part-settings-names{
                 h1.settings-bottom-text{("Vyberte prosím osobu pro úpravu údajů")}
@@ -104,7 +105,7 @@ pub fn open_settings(app: tauri::AppHandle) -> String {
                 button.settings-bottom-button.save
                 hx-post="command:save_and_close_settings"
                 hx-trigger="click"
-                hx-target="#app-body"
+                hx-target="#valid-mail-placeholder"
                 hx-swap="outerHTML"
                 {("uložit a zavřít")}
                 button.settings-bottom-button.close{("zavřít bez uložení")}
@@ -120,9 +121,54 @@ pub fn open_settings(app: tauri::AppHandle) -> String {
 pub fn save_and_close_settings(app: tauri::AppHandle) -> String {
     let app_state = app.state::<AppState>();
 
-    app_state.mail_list.lock().unwrap().save_list();
+    let mail_list_save = app_state.mail_list.lock().unwrap().save_list();
 
-    close_settings()
+    if mail_list_save.is_err(){
+        wrong_mail_warning(mail_list_save.unwrap_err())
+    }
+    else {
+        html!{
+            div
+            hx-trigger="load delay:1ms"
+            hw-swap="outerHTML"
+            hx-post="command:close_settings"
+            hx-target="#app-body"
+            {}
+        }.into_string()
+    }
+}
+
+pub fn wrong_mail_warning(name_list: Vec<String>) -> String {
+    html!{
+        div .overlay #wrong-mail-warning-overlay{
+            div .overlay-window{
+                button.close-button
+                hx-post="command:close_wrong_mail_warning"
+                hx-trigger="click"
+                hx-target="#wrong-mail-warning-overlay"
+                hx-swap="outerHTML"
+                {("X")}
+                h1.overlay-title{("Následující osoby mají neplatný E-mail")}
+                div.mail-warning-rows-section{
+                    @for (name) in (name_list){
+                        h2.mail-warning-row{(name)};
+                    }
+
+
+
+                }
+                h1.overlay-title{("Upravte nebo smažte je")}
+
+            }
+        }
+    }.into_string()
+ }
+
+#[tauri::command]
+pub fn close_wrong_mail_warning() -> String{
+    html! {
+        div #valid-mail-placeholder{}
+    }.into_string()
 }
 
 #[tauri::command]
@@ -134,7 +180,7 @@ pub fn discard_and_close_settings(app: tauri::AppHandle) -> String {
     todo!()
 }
 
-
+#[tauri::command]
 pub fn close_settings() -> String {
     let markup: Markup = html! {
         body #app-body {
@@ -312,7 +358,7 @@ pub fn edit_person(id: String, app: tauri::AppHandle) -> String {
                 button.settings-bottom-button.save
                 hx-post="command:save_and_close_settings"
                 hx-trigger="click"
-                hx-target="#app-body"
+                hx-target="#valid-mail-placeholder"
                 hx-swap="outerHTML"
                 {("uložit a zavřít")}
                 button.settings-bottom-button.close{("zavřít bez uložení")}

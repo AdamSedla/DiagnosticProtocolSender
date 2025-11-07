@@ -47,7 +47,10 @@ app_settings:
     - close_settings_password
     - open_settings
     - save_and_close_settings
+    - wrong_mail_warning
+    - close_wrong_mail_warning
     - discard_and_close_settings
+    - close_settings
     - load_settings_mechanics
     - load_settings_technics
     - edit_person
@@ -183,7 +186,9 @@ pub fn run() {
             save_feedback_mail,
             save_feedback_recepient,
             save_feedback_subject,
-            save_settings_password
+            save_settings_password,
+            close_wrong_mail_warning,
+            close_settings
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
