@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="cs">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PostrizinMailSender</title>
+  <link rel="stylesheet" href="src/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="htmx-config" content='{"selfRequestsOnly":false}' />
+  <script type="module" src="/src/main.ts" defer></script>
+
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body id="app-body">
+  <div class="top-bar">
+    <div class="top-button-bar">
+      <button class="top-bar-button" hx-post="command:open_settings_password" hx-trigger="click"
+        hx-target="#settings-placeholder" hx-swap="outerHTML">nastavení</button>
+      <button class="top-bar-button" hx-post="command:open_feedback" hx-trigger="click"
+        hx-target="#feedback-placeholder" hx-swap="outerHTML">hlášení chyb a nápady na vylepšení</button>
+      <button class="top-bar-button" hx-post="command:open_manual" hx-trigger="click" hx-target="#manual-placeholder"
+        hx-swap="outerHTML">návod k použití</button>
+    </div>
+    <img class="man-logo" src="src/assets/man_logo_batch.svg" alt="man-logo">
+  </div>
+  <div class="center-buttons">
+    <div class="mechanic-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_mechanics">
+    </div>
+    <div class="right-buttons" hx-trigger="load delay:1ms" hx-swap="innerHTML" hx-post="command:load_technics"> </div>
+  </div>
+
+  <div id="overlay-other-placeholder"></div>
+  <div id="feedback-placeholder"></div>
+  <div id="manual-placeholder"></div>
+  <div id="settings-placeholder"></div>
+
+
+  <div class="bottom-bar">
+    <button class="file-picker" hx-trigger="click" hx-post="command:pick_file" hx-swap="outerHTML">výběr
+      souborů</button>
+    <input type="image" class="truck" src="src/assets/send_truck.svg" alt="truck-icon" hx-trigger="click"
+      hx-swap="outerHTML" hx-post="command:send">
+  </div>
+</body>
+
+</html>
